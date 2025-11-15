@@ -11,8 +11,8 @@ namespace DamasChinas_Server
 	{
         public List<FriendDto> GetFriends(string username)
         {
-            var userRepo = new RepositoryUsers();
-            int id = userRepo.GetUserIdByUsername(username);
+            var _userRepo = new RepositoryUsers();
+            int id = _userRepo.GetUserIdByUsername(username);
 
             using (var db = new damas_chinasEntities())
             {
@@ -50,6 +50,7 @@ namespace DamasChinas_Server
 
 
         public bool AddFriend(int idUsuario1, int idUsuario2)
+
 		{
 			if (idUsuario1 == idUsuario2)
 					{
