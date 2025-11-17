@@ -1,0 +1,3 @@
+﻿C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Test\Properties\AssemblyInfo.cs
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Test\Properties\Resources.resx
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Test\Properties\Settings.settings

@@ -9,5 +9,10 @@ obj/
 *.cache/
 *.log
 
+
 # Mantener configuración de VS Code
 !.vscode/
+
+
+.sonarqube/
+SonarQube.Analysis.xml

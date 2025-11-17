@@ -1,0 +1,4 @@
+﻿C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Logic\Properties\AssemblyInfo.cs
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Logic\Properties\Resources.resx
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Logic\App.config
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Logic\Properties\Settings.settings

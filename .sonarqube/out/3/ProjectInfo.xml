@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+  <ProjectName>DamasChinas_Client.Test</ProjectName>
+  <ProjectLanguage>C#</ProjectLanguage>
+  <ProjectType>Product</ProjectType>
+  <ProjectGuid>5ee79a42-f001-4dd2-9d29-a1ca45a36dbf</ProjectGuid>
+  <FullPath>C:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Test\DamasChinas_Client.Test.csproj</FullPath>
+  <IsExcluded>false</IsExcluded>
+  <AnalysisResultFiles>
+    <AnalysisResultFile Id="FilesToAnalyze" Location="C:\Projects\DamasChinas\DamasChinas\.sonarqube\conf\3\FilesToAnalyze.txt" />
+  </AnalysisResultFiles>
+  <AnalysisSettings>
+    <Property Name="sonar.cs.roslyn.reportFilePaths">C:\Projects\DamasChinas\DamasChinas\.sonarqube\out\3\Issues.json</Property>
+    <Property Name="sonar.cs.analyzer.projectOutPaths">C:\Projects\DamasChinas\DamasChinas\.sonarqube\out\3</Property>
+    <Property Name="sonar.cs.scanner.telemetry">C:\Projects\DamasChinas\DamasChinas\.sonarqube\out\3\Telemetry.json</Property>
+  </AnalysisSettings>
+  <Configuration>Debug</Configuration>
+  <Platform>AnyCPU</Platform>
+</ProjectInfo>

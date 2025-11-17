@@ -1,0 +1,5 @@
+﻿C:\Projects\DamasChinas\DamasChinas\DamasChinas_Server\Host\Program.cs
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Server\Host\Properties\AssemblyInfo.cs
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Server\Host\App.config
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Server\Host\connectionStrings.config
+C:\Projects\DamasChinas\DamasChinas\DamasChinas_Server\Host\packages.config

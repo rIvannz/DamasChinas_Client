@@ -1,0 +1,1 @@
+{RmC:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Test\DamasChinas_Client.Test.csprojò	CSharp7_3

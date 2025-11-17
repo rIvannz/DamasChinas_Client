@@ -1,0 +1,1 @@
+}RoC:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.Logic\DamasChinas_Client.Logic.csprojò	CSharp7_3

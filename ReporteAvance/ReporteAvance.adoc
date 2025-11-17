@@ -637,3 +637,167 @@ El cliente cuenta con una capa de utilidades (`Utilities`) que maneja la conexi�
 - **Creación de documento ASCII-DOC:** 50%
 - **Implementacion de servicio de lobby en cliente** 100%
 - **Modificacion de la base de datos** 50%
+
+
+
+== Cuarto reporte de avance del proyecto final: Juego Damas Chinas
+---
+
+=== Cliente
+
+==== Creación y Refactorización de Nuevas Páginas XAML
+
+ 
+A continuación se enlistan **todas las ventanas XAML** que fueron creadas, actualizadas o refactorizadas durante esta semana:
+
+- Friends.xaml  
+- ChatWindow.xaml  
+- PreLobby.xaml  
+
+- ChangeData.xaml  
+- SignIn.xaml  
+- MenuRegisteredPlayer.xaml  
+- ProfilePlayer.xaml  
+- Componentes de Popups (PopupError.xaml, PopupWarning.xaml, PopupSuccess.xaml)  
+- LoadedBar.xaml (nuevo componente)  
+- Archivos de estilos globales (Buttons.xaml, TextBoxes.xaml, Cards.xaml, Colors.xaml, GeneralTheme.xaml)  
+
+Durante esta entrega, todas estas vistas recibieron mejoras orientadas a la estandarización visual y técnica del proyecto. Se eliminaron textos hardcodeados para reemplazarlos por claves internacionalizadas, se reorganizó la estructura visual siguiendo el estándar interno, se aplicaron nuevos estilos globales unificados, se corrigieron bindings, se integró el nuevo sistema de popups, se añadió soporte para la barra de carga (LoadedBar) en vistas clave y se ordenaron los recursos utilizados por cada ventana. Estos cambios garantizan coherencia gráfica, mantenibilidad, escalabilidad y una experiencia de usuario más fluida.
+
+
+---
+
+
+==== Implementación de Popups Reutilizables
+
+Durante esta semana se consolidó un sistema de ventanas emergentes (popups) completamente modular, orientado a sustituir cualquier uso directo de `MessageBox` o mensajes hardcodeados. Los popups fueron integrados con los estilos globales del proyecto, con el sistema de internacionalización y con el controlador unificado de mensajes.
+
+Las ventanas emergentes creadas o ajustadas durante esta entrega son las siguientes:
+
+- ConfirmPopupWindow.xaml  
+- FriendRequestSent.xaml  
+- LoadingWindow.xaml  
+- MessagePopupWindow.xaml  
+- VerificationCodeWindow.xaml  
+
+image::images/Popups/ImplementedPopups.jpg[Listado de PopUps creados, width=600]
+image::images/Popups/ConfirmPopupWindow.jpg[Popup Success, width=300]
+
+
+Este sistema unificado permite que cualquier ventana del proyecto utilice popups estilizados, sin hardcode y totalmente coherentes con el estándar visual y funcional del proyecto.
+
+---
+
+==== Nuevos Estilos Globales (WPF)
+
+Uno de los avances más importantes fue la creación y reorganización de estilos globales para toda la UI: botones, tarjetas, inputs, temas y colores.
+
+image::images/Styles/GlobalResources.jpg[Global Styles, width=650]
+
+---
+
+==== LoadedBar Utility (Barra de Carga)
+
+Se implementó la barra **LoadedBar**, utilizada para representar operaciones del servidor que requieren tiempo (por ejemplo, carga de inicio de sesión o registro).
+
+image::images/Utilities/LoadedBar.jpg[LoadedBar Evidence, width=650]
+
+Esta utilidad es completamente modular y reutilizable.
+
+---
+
+==== Sistema de Internacionalización Sin Hardcode
+
+Se completó la integración del sistema estandarizado que reemplaza completamente el uso de textos directos (hardcode) tanto en la interfaz como en la lógica del cliente.  
+El flujo completo de un mensaje ahora funciona así:
+
+**MessageCode (Servidor) → MessageTranslator (Cliente) → MessageHelper → Diccionario de recursos → Popup/UI**
+
+Este flujo garantiza coherencia, escalabilidad y soporte multilenguaje en toda la aplicación.
+
+===== MessageCode  
+
+El servidor nunca envía textos.  
+Cada operación devuelve únicamente un `MessageCode`, lo que evita inconsistencias y permite que el cliente controle completamente la presentación de los mensajes.
+
+===== MessageTranslator  
+
+El `MessageTranslator` es el componente responsable de convertir un `MessageCode` en el texto correspondiente según el idioma activo del sistema.  
+Este traductor consulta los diccionarios de recursos (`Lang.en.xaml`, `Lang.es.xaml`) y retorna el texto final que debe mostrarse.  
+Gracias a este componente, ninguna vista ni lógica del cliente necesita conocer claves ni diccionario: solo recibe la traducción ya lista.
+
+===== MessageHelper  
+
+El `MessageHelper` es la capa que usa la traducción generada por `MessageTranslator` y decide **cómo mostrarla** en la interfaz.  
+Es el encargado de:
+
+- Mostrar el popup correspondiente (éxito, advertencia o error).  
+- Aplicar estilos globales.  
+- Centralizar toda la lógica de visualización de mensajes.  
+- Evitar duplicación de código en cada ventana.  
+- Asegurar que todos los mensajes pasen por el mismo proceso estándar.
+
+En otras palabras, **MessageTranslator resuelve qué mensaje mostrar y MessageHelper decide cómo mostrarlo**.
+
+
+image::images/Message/MensajeIngles.jpg[Flujo de Mensajes, width=600]
+image::images/Message/MensajeEspañol.jpg[Flujo de Mensajes, width=600]
+
+===== Diccionarios de idioma reorganizados  
+
+Los archivos de idioma fueron reorganizados y estructurados por claves relacionadas con los códigos del servidor.  
+Esto permite incorporar fácilmente nuevos mensajes o modificar textos sin tocar la lógica del cliente.
+
+Con este sistema, toda la interfaz queda completamente preparada para soportar cualquier idioma y garantiza que todos los mensajes visibles cumplan con el estándar del proyecto, sin hardcode y con una experiencia consistente en todas las vistas.
+
+
+---
+
+==== Corrección Formal del Manejo de Excepciones
+
+Se reemplazó por completo:
+
+- `catch(Exception)`
+- Mensajes escritos directamente en UI
+- MessageBox directos
+
+por un sistema basado en:
+
+- `OperationResult`
+- `MessageHelper`
+- `MessageTranslator`
+- `TryExecuteAction()`
+
+
+---
+
+==== Preparación del Entorno de Análisis con SonarQube
+
+Durante esta semana no se aplicaron correcciones derivadas de SonarQube; sin embargo, se realizó toda la preparación necesaria para habilitar el análisis de calidad del código del proyecto. Esto incluyó la instalación de SonarQube Community Edition, su configuración local, la habilitación del servicio en el sistema y la integración del proyecto Damas Chinas a través de una clave de proyecto y token de autenticación.
+
+Asimismo, se instaló y configuró **SonarScanner for MSBuild**, permitiendo ejecutar análisis completos de la solución desde la consola de Visual Studio. Con esto, el proyecto queda listo para comenzar a detectar code smells, duplicaciones, problemas potenciales de mantenibilidad y violaciones al estándar de codificación en futuras iteraciones.
+
+image::images/Sonar/Analysis.jpg[SonarQube Configurado, width=650]
+
+
+
+---
+
+=== Resumen de contribución por integrante
+
+==== Rodrigo Iván Ahumada Rodríguez
+
+Durante esta semana se avanzó significativamente en la interfaz del cliente y en la estructura interna del proyecto. Se completó la creación y refactorización de múltiples ventanas XAML, asegurando el cumplimiento del estándar interno de diseño, eliminando hardcode visual y organizando los componentes para que su mantenimiento sea más claro y escalable. También se implementó un sistema completo de popups reutilizables, con soporte para internacionalización y estilos globales.
+
+Asimismo, se integró la barra de carga (LoadedBar) como componente reutilizable para operaciones remotas, se reorganizó la estructura de recursos (imágenes, diccionarios y estilos) y se completó el sistema de internacionalización basado en MessageCode, MessageTranslator y MessageHelper. Se corrigió el manejo de mensajes visibles al usuario, centralizando todo en una lógica común.
+
+Finalmente, se realizó toda la preparación del entorno de análisis de calidad utilizando SonarQube, incluyendo su instalación, configuración inicial, generación del token de proyecto y la integración con SonarScanner para ejecutar análisis locales. Esto deja el proyecto listo para comenzar con correcciones de calidad en futuras entregas.
+
+- Refactor y creación de múltiples ventanas XAML → **100%**
+- Implementación del sistema centralizado de popups → **100%**
+- Integración del sistema de internacionalización sin hardcode → **100%**
+- Implementación de LoadedBar como componente reutilizable → **100%**
+- Reorganización de recursos y estilos globales → **100%**
+- Manejo unificado de mensajes con MessageCode → **100%**
+- Preparación completa del entorno de análisis SonarQube → **100%**
+
