@@ -26,9 +26,7 @@ namespace DamasChinas_Client.UI.Pages
             LoadProfileData();
         }
 
-        // ============================================================
-        // 🔹 General navigation
-        // ============================================================
+    
 
         private void OnBackClick(object sender, RoutedEventArgs e)
         {
@@ -60,7 +58,7 @@ namespace DamasChinas_Client.UI.Pages
         {
             TryExecuteAction(() =>
             {
-                // Aquí después irá la llamada real al servidor para mandar el código
+        
                 MessageHelper.ShowPopup(
                     MessageTranslator.GetLocalizedMessage("msg_CodeSentSuccessfully"),
                     "success"
@@ -84,10 +82,7 @@ namespace DamasChinas_Client.UI.Pages
             }, "msg_NavigationError");
         }
 
-        // ============================================================
-        // 🔹 Username change
-        // ============================================================
-
+     
         private void OnSaveUsernameClick(object sender, RoutedEventArgs e)
         {
             TryExecuteAction(() =>
@@ -187,33 +182,30 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ============================================================
-        // 🔹 Password change
-        // ============================================================
+ 
 
         private void OnSavePasswordClick(object sender, RoutedEventArgs e)
         {
             TryExecuteAction(() =>
             {
-                // 1️⃣ Validar código de verificación ingresado en el propio formulario
+           
                 if (!ValidateVerificationCodeInput())
                 {
                     return;
                 }
 
-                // 2️⃣ Validar campos de contraseña
                 if (!ValidatePasswordInputs())
                 {
                     return;
                 }
 
-                // 3️⃣ Validar fuerza de la contraseña (solo validación, sin mensajes de éxito)
+             
                 if (!ValidatePasswordStrength(txtPassword.Password))
                 {
                     return;
                 }
 
-                // 4️⃣ Si todo es válido → llamar al servicio para cambiar la contraseña
+           
                 string hashedPassword = Hasher.HashPassword(txtPassword.Password.Trim());
                 ChangePassword(_profile.Username, hashedPassword);
             }, "msg_UnknownError");
@@ -221,7 +213,7 @@ namespace DamasChinas_Client.UI.Pages
 
         private bool ValidateVerificationCodeInput()
         {
-            // Asegúrate de que el TextBox en el XAML se llame igual: txtVerificationCode
+          
             string code = txtVerificationCode.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(code))
@@ -233,7 +225,6 @@ namespace DamasChinas_Client.UI.Pages
                 return false;
             }
 
-            // Cuando tengas lógica de servidor, aquí podrás validar formato, longitud, etc.
             return true;
         }
 
@@ -266,7 +257,7 @@ namespace DamasChinas_Client.UI.Pages
             try
             {
                 Validator.ValidatePassword(password);
-                // No mostramos ningún mensaje de éxito aquí.
+               
                 return true;
             }
             catch (ArgumentException ex)
@@ -303,7 +294,7 @@ namespace DamasChinas_Client.UI.Pages
 
                     if (result.Success)
                     {
-                        // Aquí sí mostramos el mensaje de éxito final
+                 
                         MessageHelper.ShowPopup(message, "success");
                         ClearPasswordInputs();
                     }
@@ -355,13 +346,10 @@ namespace DamasChinas_Client.UI.Pages
         {
             txtPassword.Password = string.Empty;
             txtConfirmPassword.Password = string.Empty;
-            // Si quieres, puedes limpiar también el código
-            // txtVerificationCode.Text = string.Empty;
+            
         }
 
-        // ============================================================
-        // 🔹 Utilities
-        // ============================================================
+    
 
         private void LoadProfileData()
         {

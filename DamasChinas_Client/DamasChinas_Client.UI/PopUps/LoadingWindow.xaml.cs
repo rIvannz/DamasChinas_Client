@@ -9,17 +9,17 @@ namespace DamasChinas_Client.UI.PopUps
 {
     public partial class LoadingWindow : Window
     {
-        // Tarea que representa el tiempo mínimo de visualización
+      
         private readonly Task _minDurationTask;
 
         public LoadingWindow()
         {
             InitializeComponent();
 
-            // Texto internacionalizado (loadingTitle en Lang.*.xaml)
+            
             TitleText.Text = MessageTranslator.GetLocalizedMessage("loadingTitle");
 
-            // 4 segundos como tiempo mínimo
+           
             _minDurationTask = Task.Delay(4000);
 
             Loaded += OnLoaded;
@@ -37,13 +37,11 @@ namespace DamasChinas_Client.UI.PopUps
             catch (Exception ex)
             {
                 Debug.WriteLine($"[LoadingWindow.OnLoaded] {ex.Message}");
-                // No re-lanzamos: el loader nunca debe tumbar la app
+                
             }
         }
 
-        /// <summary>
-        /// Espera a que se cumpla el tiempo mínimo de visualización.
-        /// </summary>
+      
         public Task WaitMinimumAsync()
         {
             return _minDurationTask;

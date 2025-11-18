@@ -28,9 +28,7 @@ namespace DamasChinas_Client.UI.Pages
             DisablePasswordFields();
         }
 
-        // ================================================================
-        //  BOTÓN "Enviar Código"
-        // ================================================================
+ 
         private void OnSendCodeClick(object sender, RoutedEventArgs e)
         {
             try
@@ -80,9 +78,7 @@ namespace DamasChinas_Client.UI.Pages
         }
 
 
-        // ================================================================
-        //  BOTÓN "Cambiar Contraseña"
-        // ================================================================
+       
         private async void OnChangePasswordClick(object sender, RoutedEventArgs e)
         {
             try
@@ -110,7 +106,7 @@ namespace DamasChinas_Client.UI.Pages
 
                 Validator.ValidatePassword(newPass);
 
-                // Mostrar barra de carga
+            
                 var loading = new LoadingWindow
                 {
                     Owner = Application.Current.MainWindow
@@ -120,14 +116,14 @@ namespace DamasChinas_Client.UI.Pages
                 await loading.WaitMinimumAsync();
                 loading.Close();
 
-                // TODO: llamada real al servidor para actualizar contraseña
+               
 
                 MessageHelper.ShowPopup(
                     MessageTranslator.GetLocalizedMessage("msg_PasswordUpdated"),
                     "success"
                 );
 
-                // Regresar al login
+             
                 NavigationService?.Navigate(new Login());
             }
             catch (ArgumentException ex)
@@ -156,9 +152,7 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ================================================================
-        //  HABILITAR / DESHABILITAR CAMPOS
-        // ================================================================
+      
         private void DisablePasswordFields()
         {
             txtNewPassword.IsEnabled = false;
@@ -173,9 +167,7 @@ namespace DamasChinas_Client.UI.Pages
             btnChangePassword.IsEnabled = true;
         }
 
-        // ================================================================
-        //  BOTÓN "Back"
-        // ================================================================
+   
         private void OnBackClick(object sender, RoutedEventArgs e)
         {
             try
@@ -195,9 +187,7 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ================================================================
-        //  SONIDO Y LENGUAJE
-        // ================================================================
+   
         private void OnSoundClick(object sender, RoutedEventArgs e)
         {
             try

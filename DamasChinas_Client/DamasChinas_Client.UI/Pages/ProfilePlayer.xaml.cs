@@ -77,10 +77,10 @@ namespace DamasChinas_Client.UI.Pages
                     return;
                 }
 
-                // 1. Limpiar sesión actual
+          
                 ClientSession.Clear();
 
-                // 2. Validar que sí tenemos NavigationService
+          
                 if (NavigationService == null)
                 {
                     MessageHelper.ShowPopup(

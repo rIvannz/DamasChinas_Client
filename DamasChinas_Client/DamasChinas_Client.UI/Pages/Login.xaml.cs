@@ -33,9 +33,7 @@ namespace DamasChinas_Client.UI.Pages
 
                 string hashedPassword = Hasher.HashPassword(password);
 
-                // ============================
-                // Mostrar ventana de carga
-                // ============================
+       
                 loadingWindow = new LoadingWindow
                 {
                     Owner = Application.Current.MainWindow
@@ -91,9 +89,7 @@ namespace DamasChinas_Client.UI.Pages
 
 
 
-        // ============================================================
-        // 🔹 CREDENTIALS RETRIEVAL
-        // ============================================================
+        
 
         private (string username, string password) GetCredentials()
         {
@@ -102,9 +98,6 @@ namespace DamasChinas_Client.UI.Pages
             return (username, password);
         }
 
-        // ============================================================
-        // 🔹 VALIDATION
-        // ============================================================
 
         private bool ValidateCredentials(string username, string password)
         {
@@ -215,7 +208,7 @@ namespace DamasChinas_Client.UI.Pages
 
                 try
                 {
-                    // También respetar tiempo mínimo en caso de error
+                  
                     await loadingWindow.WaitMinimumAsync();
                 }
                 catch (Exception ex)

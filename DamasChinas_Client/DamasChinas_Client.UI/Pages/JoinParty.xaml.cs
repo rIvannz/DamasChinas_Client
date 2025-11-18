@@ -38,9 +38,7 @@ namespace DamasChinas_Client.UI.Pages
             LoadPublicLobbies();
         }
 
-        // ============================================================
-        // 🔹 Load Public Lobbies
-        // ============================================================
+   
 
         private void LoadPublicLobbies()
         {
@@ -115,9 +113,6 @@ namespace DamasChinas_Client.UI.Pages
             LoadPublicLobbies();
         }
 
-        // ============================================================
-        // 🔹 Join by selected lobby
-        // ============================================================
 
         private void OnJoinSelectedClick(object sender, RoutedEventArgs e)
         {
@@ -146,9 +141,7 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ============================================================
-        // 🔹 Join by code
-        // ============================================================
+     
 
         private void OnJoinByCodeClick(object sender, RoutedEventArgs e)
         {
@@ -178,10 +171,7 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ============================================================
-        // 🔹 Try to join lobby
-        // ============================================================
-
+    
         private void TryJoinLobby(string code)
         {
             try
@@ -250,9 +240,7 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ============================================================
-        // 🔹 Placeholder CodeBox
-        // ============================================================
+
 
         private void OnCodeBoxGotFocus(object sender, RoutedEventArgs e)
         {
@@ -267,9 +255,7 @@ namespace DamasChinas_Client.UI.Pages
             }
         }
 
-        // ============================================================
-        // 🔹 Back Navigation
-        // ============================================================
+        
 
         private void OnBackClick(object sender, RoutedEventArgs e)
         {

@@ -19,10 +19,6 @@ namespace DamasChinas_Client.UI.PopUps
     {
         private readonly bool _autoClose;
 
-        /// <summary>
-        /// Popup universal.
-        /// type: success, error, warning, info.
-        /// </summary>
         public MessagePopupWindow(string message, string type = "info", bool autoClose = false)
         {
             InitializeComponent();

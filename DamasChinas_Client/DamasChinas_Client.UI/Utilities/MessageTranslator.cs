@@ -8,9 +8,9 @@ namespace DamasChinas_Client.UI.Utilities
 {
     public static class MessageTranslator
     {
-        // ============================================================
+
         // 1. Traducción usando claves directas (UI)
-        // ============================================================
+   
         public static string GetLocalizedMessage(string resourceKey)
         {
             try
@@ -24,9 +24,8 @@ namespace DamasChinas_Client.UI.Utilities
             }
         }
 
-        // ============================================================
         // 2. Traducción basada en MessageCode (proveniente del servidor)
-        // ============================================================
+       
         public static string GetLocalizedMessage(Enum code)
         {
             try
@@ -42,9 +41,8 @@ namespace DamasChinas_Client.UI.Utilities
             }
         }
 
-        // ============================================================
         // 3. Tabla completa MessageCode y clave en el diccionario
-        // ============================================================
+      
         private static string GetResourceKey(Enum code)
         {
             switch (code.ToString())

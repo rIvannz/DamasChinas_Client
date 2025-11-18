@@ -8,9 +8,7 @@ using DamasChinas_Client.UI.Utilities;
 
 namespace DamasChinas_Client.UI.Pages
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+  
     public partial class MainWindow : Page
     {
         public MainWindow()

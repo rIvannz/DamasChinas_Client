@@ -14,10 +14,6 @@ namespace DamasChinas_Client.UI.Pages
             InitializeComponent();
         }
 
-        // ============================================================
-        // 🔹 Apply Language
-        // ============================================================
-
         private void OnApplyClick(object sender, RoutedEventArgs e)
         {
             try

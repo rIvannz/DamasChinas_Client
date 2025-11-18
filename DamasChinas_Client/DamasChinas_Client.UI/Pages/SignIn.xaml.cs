@@ -18,9 +18,7 @@ namespace DamasChinas_Client.UI.Pages
             InitializeComponent();
         }
 
-        // ============================================================
-        // 🔹 CREATE ACCOUNT CLICK
-        // ============================================================
+     
 
         private async void OnCreateAccountClick(object sender, RoutedEventArgs e)
         {
@@ -239,9 +237,7 @@ namespace DamasChinas_Client.UI.Pages
         }
 
 
-// ============================================================
-// 🔹 VALIDATION
-// ============================================================
+
 
 private bool ValidatePassword()
         {
@@ -278,9 +274,6 @@ private bool ValidatePassword()
             txtConfirmPassword.Clear();
         }
 
-        // ============================================================
-        // 🔹 BACK
-        // ============================================================
 
         private void OnBackClick(object sender, RoutedEventArgs e)
         {
@@ -309,9 +302,7 @@ private bool ValidatePassword()
             }
         }
 
-        // ============================================================
-        // 🔹 SOUND
-        // ============================================================
+       
 
         private void OnSoundClick(object sender, RoutedEventArgs e)
         {
@@ -330,9 +321,7 @@ private bool ValidatePassword()
             }
         }
 
-        // ============================================================
-        // 🔹 LANGUAGE
-        // ============================================================
+      
 
         private void OnLanguageClick(object sender, RoutedEventArgs e)
         {
