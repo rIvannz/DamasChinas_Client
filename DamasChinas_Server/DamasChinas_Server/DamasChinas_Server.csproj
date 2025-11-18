@@ -147,6 +147,7 @@
     </Compile>
     <Compile Include="Dtos\AccountMgr.cs" />
     <Compile Include="Utilities\Email.cs" />
+    <Compile Include="Utilities\EmailSender.cs" />
     <Compile Include="Utilities\DbContextFactory.cs" />
     <Compile Include="Utilities\Validator.cs" />
   </ItemGroup>

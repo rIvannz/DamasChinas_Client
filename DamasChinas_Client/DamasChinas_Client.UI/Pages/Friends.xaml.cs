@@ -16,15 +16,21 @@ namespace DamasChinas_Client.UI.Pages
     {
         public ObservableCollection<FriendList> FriendsList { get; } = new ObservableCollection<FriendList>();
 
+  
         public Friends(string username)
         {
             InitializeComponent();
             DataContext = this;
 
-            LoadFriends(username);
+            Loaded += Friends_Loaded;
         }
 
-     
+        private void Friends_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= Friends_Loaded;
+
+            LoadFriends(ClientSession.CurrentProfile.Username);
+        }
 
         private void LoadFriends(string username)
         {

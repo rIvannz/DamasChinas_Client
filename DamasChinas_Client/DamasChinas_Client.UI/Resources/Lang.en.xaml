@@ -228,6 +228,8 @@
     <sys:String x:Key="msg_EmptyVerificationCode">Please enter the verification code.</sys:String>
     <sys:String x:Key="msg_VerificationSuccess">Verification completed successfully.</sys:String>
     <sys:String x:Key="msg_InvalidVerificationCode">The verification code is incorrect.</sys:String>
+    <sys:String x:Key="msg_VerificationCodeExpired">The verification code has expired.</sys:String>
+    <sys:String x:Key="msg_VerificationCodeNotFound">No verification code was generated for this email.</sys:String>
 
     <sys:String x:Key="msg_EmptyEmail">Email cannot be empty.</sys:String>
     <sys:String x:Key="msg_RecoveryCodeSent">We have sent you a verification code.</sys:String>

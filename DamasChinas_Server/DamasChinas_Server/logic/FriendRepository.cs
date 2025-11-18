@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.ServiceModel;
 
 namespace DamasChinas_Server
 {
@@ -153,7 +154,7 @@ namespace DamasChinas_Server
 
                         if (senderId == receiverId)
                         {
-                                throw new InvalidOperationException("Un usuario no puede enviarse una solicitud a sí mismo.");
+                                throw new FaultException("Un usuario no puede enviarse una solicitud a sí mismo.");
                         }
 
                         using (var db = CreateDbContext())
@@ -164,7 +165,7 @@ namespace DamasChinas_Server
 
                                 if (friendshipExists)
                                 {
-                                        throw new InvalidOperationException("Los usuarios ya son amigos.");
+                                        throw new FaultException("Los usuarios ya son amigos.");
                                 }
 
                                 bool isBlocked = db.bloqueos.Any(b =>
@@ -173,7 +174,7 @@ namespace DamasChinas_Server
 
                                 if (isBlocked)
                                 {
-                                        throw new InvalidOperationException("La relación está bloqueada entre los usuarios.");
+                                        throw new FaultException("La relación está bloqueada entre los usuarios.");
                                 }
 
                                 bool pendingRequest = db.solicitudes_amistad.Any(s =>
@@ -183,7 +184,7 @@ namespace DamasChinas_Server
 
                                 if (pendingRequest)
                                 {
-                                        throw new InvalidOperationException("Ya existe una solicitud pendiente entre los usuarios.");
+                                        throw new FaultException("Ya existe una solicitud pendiente entre los usuarios.");
                                 }
 
                                 var request = new solicitudes_amistad
@@ -200,61 +201,62 @@ namespace DamasChinas_Server
                         }
                 }
 
-                public bool UpdateFriendRequestStatus(string receiverUsername, string senderUsername, bool accept)
+        public bool UpdateFriendRequestStatus(string receiverUsername, string senderUsername, bool accept)
+        {
+            int receiverId = _userRepo.GetUserIdByUsername(receiverUsername);
+            int senderId = _userRepo.GetUserIdByUsername(senderUsername);
+
+            using (var db = CreateDbContext())
+            {
+                var request = db.solicitudes_amistad.FirstOrDefault(s =>
+                    s.id_emisor == senderId &&
+                    s.id_receptor == receiverId &&
+                    s.estado == "pendiente");
+
+                if (request == null)
                 {
-                        int receiverId = _userRepo.GetUserIdByUsername(receiverUsername);
-                        int senderId = _userRepo.GetUserIdByUsername(senderUsername);
-
-                        using (var db = CreateDbContext())
-                        {
-                                var request = db.solicitudes_amistad.FirstOrDefault(s =>
-                                    s.id_emisor == senderId &&
-                                    s.id_receptor == receiverId &&
-                                    s.estado == "pendiente");
-
-                                if (request == null)
-                                {
-                                        throw new InvalidOperationException("No existe una solicitud pendiente entre los usuarios.");
-                                }
-
-                                if (accept)
-                                {
-                                        bool isBlocked = db.bloqueos.Any(b =>
-                                            (b.id_bloqueador == senderId && b.id_bloqueado == receiverId) ||
-                                            (b.id_bloqueador == receiverId && b.id_bloqueado == senderId));
-
-                                        if (isBlocked)
-                                        {
-                                                throw new InvalidOperationException("La relación está bloqueada entre los usuarios.");
-                                        }
-
-                                        bool friendshipExists = db.amistades.Any(a =>
-                                            (a.id_usuario1 == senderId && a.id_usuario2 == receiverId) ||
-                                            (a.id_usuario1 == receiverId && a.id_usuario2 == senderId));
-
-                                        if (!friendshipExists)
-                                        {
-                                                db.amistades.Add(new amistades
-                                                {
-                                                        id_usuario1 = senderId,
-                                                        id_usuario2 = receiverId,
-                                                        fecha_amistad = DateTime.Now
-                                                });
-                                        }
-
-                                        request.estado = "aceptada";
-                                }
-                                else
-                                {
-                                        request.estado = "rechazada";
-                                }
-
-                                db.SaveChanges();
-                                return true;
-                        }
+                    throw new FaultException("No existe una solicitud pendiente entre los usuarios.");
                 }
 
-                public bool DeleteFriend(string username, string friendUsername)
+                if (accept)
+                {
+                    bool isBlocked = db.bloqueos.Any(b =>
+                        (b.id_bloqueador == senderId && b.id_bloqueado == receiverId) ||
+                        (b.id_bloqueador == receiverId && b.id_bloqueado == senderId));
+
+                    if (isBlocked)
+                    {
+                        throw new FaultException("La relación está bloqueada entre los usuarios.");
+                    }
+
+                    bool friendshipExists = db.amistades.Any(a =>
+                        (a.id_usuario1 == senderId && a.id_usuario2 == receiverId) ||
+                        (a.id_usuario1 == receiverId && a.id_usuario2 == senderId));
+
+                    if (!friendshipExists)
+                    {
+                        db.amistades.Add(new amistades
+                        {
+                            id_usuario1 = senderId,
+                            id_usuario2 = receiverId,
+                            fecha_amistad = DateTime.Now
+                        });
+                    }
+
+                    request.estado = "aceptada";
+                }
+                else
+                {
+                    request.estado = "rechazada";
+                }
+
+                db.SaveChanges();
+                return true;
+            }
+        }
+
+
+        public bool DeleteFriend(string username, string friendUsername)
                 {
                         int userId = _userRepo.GetUserIdByUsername(username);
                         int friendId = _userRepo.GetUserIdByUsername(friendUsername);

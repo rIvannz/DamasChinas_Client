@@ -22,28 +22,40 @@ namespace DamasChinas_Server
 			_contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
 		}
 
-		public usuarios CreateUser(UserDto userDto)
-		{
-			Validator.ValidateUserDto(userDto);
+        public void ValidateCreateUser(UserDto userDto)
+        {
+            Validator.ValidateUserDto(userDto);
 
-			return ExecuteInContext(db =>
-			{
-				if (EntityExists<usuarios>(db, u => u.correo == userDto.Email))
-				{
-					throw new InvalidOperationException("Ya existe un usuario con ese correo.");
-				}
-				if (EntityExists<perfiles>(db, p => p.username.Equals(userDto.Username, StringComparison.OrdinalIgnoreCase)))
-				{
-					throw new InvalidOperationException("Ya existe un perfil con ese nombre de usuario.");
-				}
-				var nuevoUsuario = CreateUsuario(db, userDto);
-				CreatePerfil(db, nuevoUsuario, userDto);
+            ExecuteInContext(db =>
+            {
+                if (EntityExists<usuarios>(db, u => u.correo == userDto.Email))
+                {
+                    throw new InvalidOperationException("Ya existe un usuario con ese correo.");
+                }
 
-				return GetUserWithProfile(db, nuevoUsuario.id_usuario);
-			});
-		}
+                if (EntityExists<perfiles>(db, p => p.username.Equals(userDto.Username, StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw new InvalidOperationException("Ya existe un perfil con ese nombre de usuario.");
+                }
 
-		public PublicProfile Login(LoginRequest loginRequest)
+                return true;
+            });
+        }
+
+
+        public usuarios CreateUser(UserDto userDto)
+        {
+            return ExecuteInContext(db =>
+            {
+                var nuevoUsuario = CreateUsuario(db, userDto);
+                CreatePerfil(db, nuevoUsuario, userDto);
+
+                return GetUserWithProfile(db, nuevoUsuario.id_usuario);
+            });
+        }
+
+
+        public PublicProfile Login(LoginRequest loginRequest)
 		{
 			Validator.ValidateLoginRequest(loginRequest);
 

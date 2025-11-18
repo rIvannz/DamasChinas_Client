@@ -17,6 +17,18 @@
       <xsd:import schemaLocation="http://localhost:8001/SignInService/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/DamasChinas_Server.Common" />
     </xsd:schema>
   </wsdl:types>
+  <wsdl:message name="ISingInService_ValidateUserData_InputMessage">
+    <wsdl:part name="parameters" element="tns:ValidateUserData" />
+  </wsdl:message>
+  <wsdl:message name="ISingInService_ValidateUserData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ValidateUserDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISingInService_RequestVerificationCode_InputMessage">
+    <wsdl:part name="parameters" element="tns:RequestVerificationCode" />
+  </wsdl:message>
+  <wsdl:message name="ISingInService_RequestVerificationCode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RequestVerificationCodeResponse" />
+  </wsdl:message>
   <wsdl:message name="ISingInService_CreateUser_InputMessage">
     <wsdl:part name="parameters" element="tns:CreateUser" />
   </wsdl:message>
@@ -24,6 +36,14 @@
     <wsdl:part name="parameters" element="tns:CreateUserResponse" />
   </wsdl:message>
   <wsdl:portType name="ISingInService">
+    <wsdl:operation name="ValidateUserData">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISingInService/ValidateUserData" message="tns:ISingInService_ValidateUserData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISingInService/ValidateUserDataResponse" message="tns:ISingInService_ValidateUserData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RequestVerificationCode">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISingInService/RequestVerificationCode" message="tns:ISingInService_RequestVerificationCode_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISingInService/RequestVerificationCodeResponse" message="tns:ISingInService_RequestVerificationCode_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="CreateUser">
       <wsdl:input wsaw:Action="http://tempuri.org/ISingInService/CreateUser" message="tns:ISingInService_CreateUser_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ISingInService/CreateUserResponse" message="tns:ISingInService_CreateUser_OutputMessage" />
@@ -32,6 +52,24 @@
   <wsdl:binding name="NetTcpBinding_ISingInService" type="tns:ISingInService">
     <wsp:PolicyReference URI="#NetTcpBinding_ISingInService_policy" />
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="ValidateUserData">
+      <soap12:operation soapAction="http://tempuri.org/ISingInService/ValidateUserData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RequestVerificationCode">
+      <soap12:operation soapAction="http://tempuri.org/ISingInService/RequestVerificationCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="CreateUser">
       <soap12:operation soapAction="http://tempuri.org/ISingInService/CreateUser" style="document" />
       <wsdl:input>

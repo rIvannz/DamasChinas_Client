@@ -283,11 +283,23 @@ namespace DamasChinas_Client.UI.SingInServiceProxy {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SingInServiceProxy.ISingInService")]
     public interface ISingInService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/CreateUser", ReplyAction="http://tempuri.org/ISingInService/CreateUserResponse")]
-        DamasChinas_Client.UI.SingInServiceProxy.OperationResult CreateUser(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/ValidateUserData", ReplyAction="http://tempuri.org/ISingInService/ValidateUserDataResponse")]
+        DamasChinas_Client.UI.SingInServiceProxy.OperationResult ValidateUserData(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/ValidateUserData", ReplyAction="http://tempuri.org/ISingInService/ValidateUserDataResponse")]
+        System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> ValidateUserDataAsync(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/RequestVerificationCode", ReplyAction="http://tempuri.org/ISingInService/RequestVerificationCodeResponse")]
+        DamasChinas_Client.UI.SingInServiceProxy.OperationResult RequestVerificationCode(string email);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/RequestVerificationCode", ReplyAction="http://tempuri.org/ISingInService/RequestVerificationCodeResponse")]
+        System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> RequestVerificationCodeAsync(string email);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/CreateUser", ReplyAction="http://tempuri.org/ISingInService/CreateUserResponse")]
-        System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> CreateUserAsync(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto);
+        DamasChinas_Client.UI.SingInServiceProxy.OperationResult CreateUser(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto, string code);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISingInService/CreateUser", ReplyAction="http://tempuri.org/ISingInService/CreateUserResponse")]
+        System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> CreateUserAsync(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto, string code);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -317,12 +329,28 @@ namespace DamasChinas_Client.UI.SingInServiceProxy {
                 base(binding, remoteAddress) {
         }
         
-        public DamasChinas_Client.UI.SingInServiceProxy.OperationResult CreateUser(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto) {
-            return base.Channel.CreateUser(userDto);
+        public DamasChinas_Client.UI.SingInServiceProxy.OperationResult ValidateUserData(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto) {
+            return base.Channel.ValidateUserData(userDto);
         }
         
-        public System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> CreateUserAsync(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto) {
-            return base.Channel.CreateUserAsync(userDto);
+        public System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> ValidateUserDataAsync(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto) {
+            return base.Channel.ValidateUserDataAsync(userDto);
+        }
+        
+        public DamasChinas_Client.UI.SingInServiceProxy.OperationResult RequestVerificationCode(string email) {
+            return base.Channel.RequestVerificationCode(email);
+        }
+        
+        public System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> RequestVerificationCodeAsync(string email) {
+            return base.Channel.RequestVerificationCodeAsync(email);
+        }
+        
+        public DamasChinas_Client.UI.SingInServiceProxy.OperationResult CreateUser(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto, string code) {
+            return base.Channel.CreateUser(userDto, code);
+        }
+        
+        public System.Threading.Tasks.Task<DamasChinas_Client.UI.SingInServiceProxy.OperationResult> CreateUserAsync(DamasChinas_Client.UI.SingInServiceProxy.UserDto userDto, string code) {
+            return base.Channel.CreateUserAsync(userDto, code);
         }
     }
 }

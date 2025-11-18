@@ -22,6 +22,8 @@ namespace DamasChinas_Client.UI.PopUps
 {
     public partial class VerificationCodeWindow : Window
     {
+        public string CodeValue { get; private set; }
+
         public VerificationCodeWindow()
         {
             InitializeComponent();
@@ -33,9 +35,8 @@ namespace DamasChinas_Client.UI.PopUps
         {
             try
             {
-                string code = txtVerificationCode.Text.Trim();
+                var code = txtVerificationCode.Text.Trim();
 
-                // 1️⃣ Validación: campo vacío
                 if (string.IsNullOrWhiteSpace(code))
                 {
                     MessageHelper.ShowPopup(
@@ -45,27 +46,9 @@ namespace DamasChinas_Client.UI.PopUps
                     return;
                 }
 
-         
-                bool isValid = code == "1234";
-
-                if (!isValid)
-                {
-                    MessageHelper.ShowPopup(
-                        MessageTranslator.GetLocalizedMessage("msg_InvalidVerificationCode"),
-                        "error"
-                    );
-                    return;
-                }
-
-       
-                MessageHelper.ShowPopup(
-                    MessageTranslator.GetLocalizedMessage("msg_VerificationSuccess"),
-                    "success"
-                );
-
-          
-                this.DialogResult = true;
-                this.Close();
+                CodeValue = code;
+                DialogResult = true;
+                Close();
             }
             catch (Exception ex)
             {

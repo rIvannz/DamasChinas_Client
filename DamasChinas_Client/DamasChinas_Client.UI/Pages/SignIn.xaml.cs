@@ -24,127 +24,226 @@ namespace DamasChinas_Client.UI.Pages
 
         private async void OnCreateAccountClick(object sender, RoutedEventArgs e)
         {
+            var btn = sender as Button;
+            btn.IsEnabled = false;
+
             SingInServiceClient client = null;
-            Button btn = sender as Button;
-            LoadingWindow loadingWindow = null;
+            LoadingWindow loader = null;
 
             try
             {
-                if (btn != null)
-                {
-                    btn.IsEnabled = false;
-                }
-
-                // ============================
-                // VALIDACIONES LOCALES
-                // ============================
-                if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
-                    string.IsNullOrWhiteSpace(txtLastName.Text) ||
-                    string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                    string.IsNullOrWhiteSpace(txtUsername.Text) ||
-                    string.IsNullOrWhiteSpace(txtPassword.Password) ||
-                    string.IsNullOrWhiteSpace(txtConfirmPassword.Password))
-                {
-                    MessageHelper.ShowPopup(
-                        MessageTranslator.GetLocalizedMessage("msg_EmptyCredentials"),
-                        "warning"
-                    );
+                if (!ValidateLocalInputs())
                     return;
-                }
 
-                if (txtPassword.Password != txtConfirmPassword.Password)
-                {
-                    MessageHelper.ShowPopup(
-                        MessageTranslator.GetLocalizedMessage("msg_PasswordsDontMatch"),
-                        "warning"
-                    );
-                    return;
-                }
+                loader = ShowLoader();
 
-                if (!ValidatePassword())
-                {
-                    MessageHelper.ShowPopup(
-                        MessageTranslator.GetLocalizedMessage("msg_InvalidPassword"),
-                        "warning"
-                    );
-                    return;
-                }
-
-                // ============================
-                // MOSTRAR LOADING
-                // ============================
-                loadingWindow = new LoadingWindow
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                loadingWindow.Show();
-
-                // ============================
-                // LLAMADA AL SERVICIO
-                // ============================
                 client = new SingInServiceClient();
                 var userDto = GetUserFromInputs();
-                var result = await Task.Run(() => client.CreateUser(userDto));
 
-                if (result?.Success != true)
-                {
-                    // Espera tiempo mínimo antes de cerrar loader
-                    await loadingWindow.WaitMinimumAsync();
-                    loadingWindow.Close();
-
-                    string msg = MessageTranslator.GetLocalizedMessage(result.Code);
-                    MessageHelper.ShowPopup(msg, "error");
+                if (!await ValidateWithServerAsync(client, userDto, loader))
                     return;
-                }
 
-                // ÉXITO: cerrar loader y abrir ventana de código
-                await loadingWindow.WaitMinimumAsync();
-                loadingWindow.Close();
+                loader.Close();
 
-                var popup = new VerificationCodeWindow
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                popup.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[SignIn.OnCreateAccountClick] {ex.Message}");
+                if (!await RequestVerificationCodeAsync(client, userDto))
+                    return;
 
-                if (loadingWindow != null)
-                {
-                    await loadingWindow.WaitMinimumAsync();
+                var codeValue = ShowVerificationCodeWindow();
 
-                    if (loadingWindow.IsVisible)
-                    {
-                        loadingWindow.Close();
-                    }
-                }
+                if (string.IsNullOrWhiteSpace(codeValue))
+                    return;
 
-                MessageHelper.ShowPopup(
-                    MessageTranslator.GetLocalizedMessage("msg_UnknownError"),
-                    "error"
-                );
+                loader = ShowLoader();
+
+                if (!await CreateUserAsync(client, userDto, codeValue, loader))
+                    return;
+
+                ShowSuccessPopup();
             }
             finally
             {
-                if (btn != null)
-                {
-                    btn.IsEnabled = true;
-                }
-
+                btn.IsEnabled = true;
                 ServiceHelper.SafeClose(client);
+                CloseLoaderIfOpen(loader);
             }
         }
 
 
 
+        private bool ValidateLocalInputs()
+        {
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
+                string.IsNullOrWhiteSpace(txtLastName.Text) ||
+                string.IsNullOrWhiteSpace(txtEmail.Text) ||
+                string.IsNullOrWhiteSpace(txtUsername.Text) ||
+                string.IsNullOrWhiteSpace(txtPassword.Password) ||
+                string.IsNullOrWhiteSpace(txtConfirmPassword.Password))
+            {
+                ShowWarning("msg_EmptyCredentials");
+                return false;
+            }
 
-        // ============================================================
-        // 🔹 VALIDATION
-        // ============================================================
+            if (txtPassword.Password != txtConfirmPassword.Password)
+            {
+                ShowWarning("msg_PasswordsDontMatch");
+                return false;
+            }
 
-        private bool ValidatePassword()
+            if (!ValidatePassword())
+            {
+                ShowWarning("msg_InvalidPassword");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private LoadingWindow ShowLoader()
+        {
+            var loader = new LoadingWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            loader.Show();
+            return loader;
+        }
+
+
+        private async Task<bool> ValidateWithServerAsync(SingInServiceClient client, UserDto dto, LoadingWindow loader)
+        {
+            var result = await Task.Run(() => client.ValidateUserData(dto));
+
+            await loader.WaitMinimumAsync();
+            loader.Close();
+
+            if (result?.Success != true)
+            {
+                ShowError(MessageTranslator.GetLocalizedMessage(result.Code));
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private string ShowVerificationCodeWindow()
+        {
+            var popup = new VerificationCodeWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            return popup.ShowDialog() == true ? popup.CodeValue : null;
+        }
+
+
+        private async Task<bool> RequestVerificationCodeAsync(SingInServiceClient client, UserDto dto)
+        {
+            var result = await Task.Run(() => client.RequestVerificationCode(dto.Email));
+
+            if (result?.Success != true)
+            {
+                var message = result != null
+                    ? MessageTranslator.GetLocalizedMessage(result.Code)
+                    : MessageTranslator.GetLocalizedMessage("msg_CodeSendingError");
+                ShowError(message);
+                return false;
+            }
+
+            MessageHelper.ShowPopup(
+                MessageTranslator.GetLocalizedMessage("msg_CodeSentSuccessfully"),
+                "success"
+            );
+
+            return true;
+        }
+
+
+        private async Task<bool> CreateUserAsync(SingInServiceClient client, UserDto dto, string code, LoadingWindow loader)
+        {
+            var result = await Task.Run(() => client.CreateUser(dto, code));
+
+            await loader.WaitMinimumAsync();
+            loader.Close();
+
+            if (result?.Success != true)
+            {
+                HandleCodeCreationError(result);
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private void ShowWarning(string code)
+        {
+            MessageHelper.ShowPopup(MessageTranslator.GetLocalizedMessage(code), "warning");
+        }
+
+
+        private void ShowError(string msg)
+        {
+            MessageHelper.ShowPopup(msg, "error");
+        }
+
+
+        private void HandleCodeCreationError(OperationResult result)
+        {
+            switch (result?.TechnicalDetail)
+            {
+                case "invalid":
+                    ShowError(MessageTranslator.GetLocalizedMessage("msg_InvalidVerificationCode"));
+                    break;
+                case "expired":
+                    ShowError(MessageTranslator.GetLocalizedMessage("msg_VerificationCodeExpired"));
+                    break;
+                case "not_found":
+                    ShowError(MessageTranslator.GetLocalizedMessage("msg_VerificationCodeNotFound"));
+                    break;
+                default:
+                    ShowError(MessageTranslator.GetLocalizedMessage("msg_UnknownError"));
+                    break;
+            }
+        }
+
+
+        private void ShowSuccessPopup()
+        {
+            MessageHelper.ShowPopup(
+                MessageTranslator.GetLocalizedMessage("msg_AccountCreated"),
+                "success"
+            );
+        }
+
+
+        private void HandleUnexpectedError(Exception ex)
+        {
+            Debug.WriteLine($"[SignIn] {ex.Message}");
+            MessageHelper.ShowPopup(
+                MessageTranslator.GetLocalizedMessage("msg_UnknownError"),
+                "error"
+            );
+        }
+
+
+        private async void CloseLoaderIfOpen(LoadingWindow loader)
+        {
+            if (loader != null)
+            {
+                await loader.WaitMinimumAsync();
+                if (loader.IsVisible)
+                    loader.Close();
+            }
+        }
+
+
+// ============================================================
+// 🔹 VALIDATION
+// ============================================================
+
+private bool ValidatePassword()
         {
             try
             {

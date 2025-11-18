@@ -255,6 +255,8 @@
     <!-- Verificación -->
     <sys:String x:Key="msg_CodeSendingError">Error al enviar el código de verificación.</sys:String>
     <sys:String x:Key="msg_CodeSentSuccessfully">Código de verificación enviado correctamente.</sys:String>
+    <sys:String x:Key="msg_VerificationCodeExpired">El código de verificación ha expirado.</sys:String>
+    <sys:String x:Key="msg_VerificationCodeNotFound">No se generó un código de verificación para este correo.</sys:String>
 
     <!-- Sonido -->
     <sys:String x:Key="msg_SoundVolumeInvalid">Valor de volumen inválido.</sys:String>

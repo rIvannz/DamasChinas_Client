@@ -95,10 +95,46 @@ namespace DamasChinas_Client.UI.FriendServiceProxy {
     public interface IFriendService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/GetFriends", ReplyAction="http://tempuri.org/IFriendService/GetFriendsResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IFriendService/GetFriendsStringFault", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
         DamasChinas_Client.UI.FriendServiceProxy.FriendDto[] GetFriends(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/GetFriends", ReplyAction="http://tempuri.org/IFriendService/GetFriendsResponse")]
         System.Threading.Tasks.Task<DamasChinas_Client.UI.FriendServiceProxy.FriendDto[]> GetFriendsAsync(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/GetFriendRequests", ReplyAction="http://tempuri.org/IFriendService/GetFriendRequestsResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IFriendService/GetFriendRequestsStringFault", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
+        DamasChinas_Client.UI.FriendServiceProxy.FriendDto[] GetFriendRequests(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/GetFriendRequests", ReplyAction="http://tempuri.org/IFriendService/GetFriendRequestsResponse")]
+        System.Threading.Tasks.Task<DamasChinas_Client.UI.FriendServiceProxy.FriendDto[]> GetFriendRequestsAsync(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/SendFriendRequest", ReplyAction="http://tempuri.org/IFriendService/SendFriendRequestResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IFriendService/SendFriendRequestStringFault", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
+        bool SendFriendRequest(string senderUsername, string receiverUsername);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/SendFriendRequest", ReplyAction="http://tempuri.org/IFriendService/SendFriendRequestResponse")]
+        System.Threading.Tasks.Task<bool> SendFriendRequestAsync(string senderUsername, string receiverUsername);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/DeleteFriend", ReplyAction="http://tempuri.org/IFriendService/DeleteFriendResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IFriendService/DeleteFriendStringFault", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
+        bool DeleteFriend(string username, string friendUsername);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/DeleteFriend", ReplyAction="http://tempuri.org/IFriendService/DeleteFriendResponse")]
+        System.Threading.Tasks.Task<bool> DeleteFriendAsync(string username, string friendUsername);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/UpdateBlockStatus", ReplyAction="http://tempuri.org/IFriendService/UpdateBlockStatusResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IFriendService/UpdateBlockStatusStringFault", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
+        bool UpdateBlockStatus(string blockerUsername, string blockedUsername, bool block);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/UpdateBlockStatus", ReplyAction="http://tempuri.org/IFriendService/UpdateBlockStatusResponse")]
+        System.Threading.Tasks.Task<bool> UpdateBlockStatusAsync(string blockerUsername, string blockedUsername, bool block);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/UpdateFriendRequestStatus", ReplyAction="http://tempuri.org/IFriendService/UpdateFriendRequestStatusResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IFriendService/UpdateFriendRequestStatusStringFault", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
+        bool UpdateFriendRequestStatus(string receiverUsername, string senderUsername, bool accept);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFriendService/UpdateFriendRequestStatus", ReplyAction="http://tempuri.org/IFriendService/UpdateFriendRequestStatusResponse")]
+        System.Threading.Tasks.Task<bool> UpdateFriendRequestStatusAsync(string receiverUsername, string senderUsername, bool accept);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -134,6 +170,46 @@ namespace DamasChinas_Client.UI.FriendServiceProxy {
         
         public System.Threading.Tasks.Task<DamasChinas_Client.UI.FriendServiceProxy.FriendDto[]> GetFriendsAsync(string username) {
             return base.Channel.GetFriendsAsync(username);
+        }
+        
+        public DamasChinas_Client.UI.FriendServiceProxy.FriendDto[] GetFriendRequests(string username) {
+            return base.Channel.GetFriendRequests(username);
+        }
+        
+        public System.Threading.Tasks.Task<DamasChinas_Client.UI.FriendServiceProxy.FriendDto[]> GetFriendRequestsAsync(string username) {
+            return base.Channel.GetFriendRequestsAsync(username);
+        }
+        
+        public bool SendFriendRequest(string senderUsername, string receiverUsername) {
+            return base.Channel.SendFriendRequest(senderUsername, receiverUsername);
+        }
+        
+        public System.Threading.Tasks.Task<bool> SendFriendRequestAsync(string senderUsername, string receiverUsername) {
+            return base.Channel.SendFriendRequestAsync(senderUsername, receiverUsername);
+        }
+        
+        public bool DeleteFriend(string username, string friendUsername) {
+            return base.Channel.DeleteFriend(username, friendUsername);
+        }
+        
+        public System.Threading.Tasks.Task<bool> DeleteFriendAsync(string username, string friendUsername) {
+            return base.Channel.DeleteFriendAsync(username, friendUsername);
+        }
+        
+        public bool UpdateBlockStatus(string blockerUsername, string blockedUsername, bool block) {
+            return base.Channel.UpdateBlockStatus(blockerUsername, blockedUsername, block);
+        }
+        
+        public System.Threading.Tasks.Task<bool> UpdateBlockStatusAsync(string blockerUsername, string blockedUsername, bool block) {
+            return base.Channel.UpdateBlockStatusAsync(blockerUsername, blockedUsername, block);
+        }
+        
+        public bool UpdateFriendRequestStatus(string receiverUsername, string senderUsername, bool accept) {
+            return base.Channel.UpdateFriendRequestStatus(receiverUsername, senderUsername, accept);
+        }
+        
+        public System.Threading.Tasks.Task<bool> UpdateFriendRequestStatusAsync(string receiverUsername, string senderUsername, bool accept) {
+            return base.Channel.UpdateFriendRequestStatusAsync(receiverUsername, senderUsername, accept);
         }
     }
 }
