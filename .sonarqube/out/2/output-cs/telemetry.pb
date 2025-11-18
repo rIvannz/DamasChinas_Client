@@ -1,1 +1,0 @@
-wRiC:\Projects\DamasChinas\DamasChinas\DamasChinas_Client\DamasChinas_Client.UI\DamasChinas_Client.UI.csprojò	CSharp7_3

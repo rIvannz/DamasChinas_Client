@@ -9,10 +9,26 @@ obj/
 *.cache/
 *.log
 
-
 # Mantener configuración de VS Code
 !.vscode/
 
-
+# Ignorar carpeta de análisis de SonarQube (siempre se genera de nuevo)
 .sonarqube/
-SonarQube.Analysis.xml
+
+# Ignorar reportes temporales del Scanner
+.scannerwork/
+
+# Ignorar archivos generados por MSBuild
+*.opendb
+*.tlog
+*.lastcodeanalysissucceeded
+*.FileListAbsolute.txt
+
+# Ignorar configuración de Rider (si algún día lo usas)
+.idea/
+
+# Ignorar paquetes NuGet descargados
+packages/
+
+# Ignorar configuraciones de usuario que cambian por máquina
+*.pubxml.user
