@@ -643,6 +643,127 @@ El cliente cuenta con una capa de utilidades (`Utilities`) que maneja la conexi�
 == Cuarto reporte de avance del proyecto final: Juego Damas Chinas
 ---
 
+=== Servidor 
+
+=== Servicio de amigos
+
+image::images/FriendSevice/SAA.png[Evidencia funcionamiento 1 , width=600]
+image::images/FriendSevice/SAEA.png[Evidencia funcionamiento 2, width=600]
+image::images/FriendSevice/SAL.png[Evidencia funcionamiento 3 width=600]
+image::images/FriendSevice/SAR.png[Evidencia funcionamiento 4, width=600]
+
+El repositorio **FriendRepository** centraliza toda la lógica de relaciones entre usuarios del sistema:
+
+- Maneja solicitudes de amistad y su ciclo completo.
+- Gestiona creación y eliminación de amistades.
+- Administra bloqueos con limpieza automática de relaciones previas.
+- Devuelve información lista para ser consumida por los servicios WCF.
+- Garantiza que todas las operaciones sean consistentes y seguras dentro del servidor.
+
+==== Obtener solicitudes de amistad pendientes
+**Método:** `GetFriendRequests(string username)`
+
+- Obtiene el ID del usuario receptor.
+- Busca solicitudes con estado **"pendiente"**.
+- Carga los perfiles asociados mediante `Include()`.
+- Construye objetos `FriendDto` con información lista para la UI:
+  - Id del emisor.
+  - Username del emisor.
+  - Avatar.
+  - Estado de conexión usando `SessionManager.IsOnline`.
+
+**Función:** Devuelve todas las solicitudes de amistad entrantes que aún no han sido atendidas.
+
+===== Enviar una solicitud de amistad
+**Método:** `SendFriendRequest(string senderUsername, string receiverUsername)`
+
+Realiza varias validaciones antes de permitir crear una solicitud:
+
+- Evita que un usuario se envíe solicitud a sí mismo.
+- Verifica que no sean ya amigos.
+- Verifica que no exista un bloqueo entre ambos.
+- Comprueba que no exista ya una solicitud pendiente.
+
+Si todas las validaciones son correctas, crea un nuevo registro en `solicitudes_amistad` con estado **"pendiente"**.
+
+**Función:** Registra una nueva solicitud asegurando consistencia y evitando duplicados.
+
+
+===== Actualizar el estado de una solicitud
+**Método:** `UpdateFriendRequestStatus(string receiverUsername, string senderUsername, bool accept)`
+
+Gestión completa de solicitudes pendientes:
+
+- Localiza la solicitud entre emisor y receptor.
+- Si `accept == true`:
+  - Revisa que no exista un bloqueo activo.
+  - Verifica si ya existía una amistad (para evitar duplicados).
+  - Crea la amistad si es necesario.
+  - Marca la solicitud como **"aceptada"**.
+- Si `accept == false`:
+  - Marca la solicitud como **"rechazada"**.
+
+**Función:** Permite aceptar o rechazar solicitudes mediante una sola operación.
+
+
+===== Crear amistad directamente
+**Método:** `AddFriend(int idUsuario1, int idUsuario2)`
+
+- Evita que un usuario se agregue a sí mismo.
+- Verifica que ambos usuarios existan en la base de datos.
+- Revisa que no exista ya una amistad previa.
+- Crea el registro en la tabla `amistades`.
+
+**Función:** Crea una relación de amistad válida entre usuarios.
+
+
+===== Eliminar una amistad
+**Método:** `DeleteFriend(int idUsuario1, int idUsuario2)`
+
+- Busca una amistad entre ambos usuarios en cualquier dirección.
+- Si existe, elimina la relación de la base.
+
+**Función:** Permite terminar una relación de amistad.
+
+
+===== Bloquear o desbloquear usuarios
+**Método:** `UpdateBlockStatus(string blockerUsername, string blockedUsername, bool block)`
+
+**Cuando `block == true`:**
+- Verifica si el bloqueo ya existe.
+- Elimina cualquier amistad previa entre ambos usuarios.
+- Elimina solicitudes de amistad enviadas entre ellos.
+- Crea un nuevo registro en la tabla `bloqueos`.
+
+**Cuando `block == false`:**
+- Verifica que exista un bloqueo activo.
+- Lo elimina de la base de datos.
+
+**Función:** Gestiona bloqueos de usuarios, impidiendo interacciones futuras hasta que el bloqueo sea retirado.
+
+
+=== Solicitud de codigo sing in
+
+
+El sistema implementa un mecanismo de verificación por correo para asegurar que cada usuario realmente es dueño del correo con el que intenta registrarse. Este proceso añade una capa esencial de seguridad y evita la creación de cuentas fraudulentas.
+
+Cuando el usuario solicita el código, el servidor genera un número único y lo guarda temporalmente junto con la hora exacta en que fue creado. Este código se envía al correo del usuario y tiene una vigencia limitada de 5 minutos. Durante este tiempo, el usuario debe introducirlo en la aplicación para continuar con su registro.
+
+Al recibir el código ingresado, el servidor realiza tres validaciones:
+1. **Existencia:** confirma que haya un código generado para ese correo.
+2. **Exactitud:** verifica que el código ingresado coincida con el enviado.
+3. **Validez temporal:** comprueba que no hayan pasado más de 5 minutos desde su creación.
+
+Si cualquiera de estas condiciones falla, el servidor rechaza el registro por motivos de seguridad.  
+Si todo es correcto, el código se elimina y el usuario queda autorizado para completar su creación de cuenta.
+
+Este mecanismo garantiza que los correos registrados sean reales, dificulta intentos de suplantación y refuerza la integridad del proceso de registro.
+
+image::images/CodigoVerificacion/RVC.png[videncia funcionamiento 1 , width=600]
+image::images/CodigoVerificacion/RVC2.png[encia funcionamiento 2, width=600]
+image::images/CodigoVerificacion/RVC3.png[videncia funcionamiento 3 width=600]
+image::images/CodigoVerificacion/RVT.jpg[idencia funcionamiento 4, width=600]
+
 === Cliente
 
 ==== Creación y Refactorización de Nuevas Páginas XAML
@@ -794,10 +915,30 @@ Asimismo, se integró la barra de carga (LoadedBar) como componente reutilizable
 Finalmente, se realizó toda la preparación del entorno de análisis de calidad utilizando SonarQube, incluyendo su instalación, configuración inicial, generación del token de proyecto y la integración con SonarScanner para ejecutar análisis locales. Esto deja el proyecto listo para comenzar con correcciones de calidad en futuras entregas.
 
 - Refactor y creación de múltiples ventanas XAML → **100%**
-- Implementación del sistema centralizado de popups → **100%**
+- Implementación del sistema centralizado de popups → **80%**
 - Integración del sistema de internacionalización sin hardcode → **100%**
 - Implementación de LoadedBar como componente reutilizable → **100%**
 - Reorganización de recursos y estilos globales → **100%**
-- Manejo unificado de mensajes con MessageCode → **100%**
+- Manejo unificado de mensajes con MessageCode → **90%**
 - Preparación completa del entorno de análisis SonarQube → **100%**
 
+
+==== Seth Marquez Rodriguez
+
+==== Seth Márquez Márquez
+
+Durante esta semana se avanzó en la lógica del servidor, completando la implementación del sistema de solicitudes de amistad, la aceptación y rechazo de solicitudes, la gestión de amistades y el módulo de bloqueos entre usuarios. Todo este flujo fue desarrollado con validaciones completas que aseguran la integridad de los datos, evitan duplicados y previenen erroresdeinteracciones entre jugadores. Asimismo, se organizó y consolidó el repositorio `FriendRepository`, responsable de centralizar la lógica social del proyecto.
+
+Además, se implementó el sistema de verificación por correo para el registro de nuevos usuarios, el cual incluye la generación del código, su almacenamiento temporal, validación con vigencia limitada y eliminación segura tras su uso. Este mecanismo incrementó la seguridad del proceso de registro y garantizó que solo correos válidos y comprobados puedan registrar cuentas.
+
+Cabe mencionar que se trabajo en la implementacion de estas funcionalidades en el cliente siguiendo la base dejada por mi compañero.
+
+En conjunto con lo anterior, se realizó una refactorización general del servidor, reduciendo complejidad ciclomática, ordenando rutas de servicios, mejorando la claridad del código y normalizando el manejo de excepciones. También se eliminaron estructuras innecesarias, se unificó la lógica distribuida en métodos extensos y se optimizaron los repositorios para una mayor consistencia y mantenibilidad. Con estos trabajos, la capa del servidor quedó más estable, limpia y preparada para futuras ampliaciones del sistema.
+
+- Lógica completa del servidor (WCF) → **100%**
+- Creacion e iplementacion de el modulo de control de amigos → **100%**
+- Creacion e implementacion de la funcionalidad de codigos → **100%**
+- Refactorización para reducir deuda tecnica y alto acomplamiento en el servidor → **100%**
+- Elaboracion del reporte ASCI-DOC → **80%**
+- Manejo unificado de mensajes con MessageCode → **10%**
+- Implementación del sistema centralizado de popups → **80%**
