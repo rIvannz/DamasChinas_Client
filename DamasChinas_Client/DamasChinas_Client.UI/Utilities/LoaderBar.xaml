@@ -10,7 +10,7 @@
                              Storyboard.TargetProperty="Width"
                              From="0"
                              To="300"
-                             Duration="0:0:4"
+                             Duration="0:0:6"
                              AutoReverse="False"
                              FillBehavior="Stop"/>
         </Storyboard>

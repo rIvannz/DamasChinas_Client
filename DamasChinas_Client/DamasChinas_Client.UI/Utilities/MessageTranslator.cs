@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Windows;
 
-// YA NO debes importar un MessageCode específico aquí
-// porque vienen de diferentes proxies
-
 namespace DamasChinas_Client.UI.Utilities
 {
     public static class MessageTranslator
     {
-
-        // 1. Traducción usando claves directas (UI)
-   
+        // Traducción usando clave directa
         public static string GetLocalizedMessage(string resourceKey)
         {
             try
@@ -24,15 +19,13 @@ namespace DamasChinas_Client.UI.Utilities
             }
         }
 
-        // 2. Traducción basada en MessageCode (proveniente del servidor)
-       
+        // Traducción usando MessageCode (enum)
         public static string GetLocalizedMessage(Enum code)
         {
             try
             {
                 string key = GetResourceKey(code);
                 object resource = Application.Current.TryFindResource(key);
-
                 return resource != null ? resource.ToString() : $"[{code}]";
             }
             catch
@@ -41,29 +34,48 @@ namespace DamasChinas_Client.UI.Utilities
             }
         }
 
-        // 3. Tabla completa MessageCode y clave en el diccionario
-      
+        // Tabla de equivalencias MessageCode → ResourceKey
         private static string GetResourceKey(Enum code)
         {
             switch (code.ToString())
             {
-                // Éxito
+                // ========================
+                // ÉXITOS
+                // ========================
                 case "Success": return "msg_Success";
 
-                // Login / Usuarios
+                // ========================
+                // AUTENTICACIÓN / USUARIOS
+                // ========================
                 case "LoginInvalidCredentials": return "msg_LoginInvalidCredentials";
                 case "UserDuplicateEmail": return "msg_UserDuplicateEmail";
                 case "UserNotFound": return "msg_UserNotFound";
+                case "UserValidationError": return "msg_UserValidationError";
 
-                // Lobby / Partidas
+                case "VerificationCodeNotFound": return "msg_VerificationCodeNotFound";
+                case "VerificationCodeExpired": return "msg_VerificationCodeExpired";
+                case "VerificationCodeInvalid": return "msg_InvalidVerificationCode";
+                case "VerificationCodeSendError": return "msg_CodeSendingError";
+
+                // ========================
+                // PARTIDAS / LOBBY
+                // ========================
                 case "MatchCreationFailed": return "msg_MatchCreationFailed";
+                case "LobbyNotFound": return "msg_LobbyNotFound";
+                case "LobbyInactive": return "msg_LobbyInactive";
+                case "LobbyUserBanned": return "msg_LobbyUserBanned";
+                case "LobbyClosed": return "msg_LobbyClosed";
 
-                // Backend
+                // ========================
+                // BACKEND / SERVIDOR
+                // ========================
                 case "ServerUnavailable": return "msg_ServerUnavailable";
                 case "NetworkLatency": return "msg_NetworkLatency";
                 case "UnknownError": return "msg_UnknownError";
 
-                // Validaciones universales
+                // ========================
+                // VALIDACIONES UNIVERSALES
+                // ========================
                 case "EmptyCredentials": return "msg_EmptyCredentials";
                 case "PasswordsDontMatch": return "msg_PasswordsDontMatch";
                 case "InvalidPassword": return "msg_InvalidPassword";
@@ -79,11 +91,44 @@ namespace DamasChinas_Client.UI.Utilities
                 case "CodeSendingError": return "msg_CodeSendingError";
                 case "CodeSentSuccessfully": return "msg_CodeSentSuccessfully";
                 case "ChatUnavailable": return "msg_ChatUnavailable";
+                case "UsernameExists": return "msg_UsernameExists";
 
-                // Sonido
+                // ========================
+                // VALIDACIONES ESPECÍFICAS
+                // ========================
+
+                // Name
+                case "InvalidNameEmpty": return "msg_InvalidNameEmpty";
+                case "InvalidNameLength": return "msg_InvalidNameLength";
+                case "InvalidNameCharacters": return "msg_InvalidNameCharacters";
+
+                // Username
+                case "InvalidUsernameEmpty": return "msg_InvalidUsernameEmpty";
+                case "InvalidUsernameLength": return "msg_InvalidUsernameLength";
+                case "InvalidUsernameCharacters": return "msg_InvalidUsernameCharacters";
+
+                // Password
+                case "InvalidPasswordEmpty": return "msg_InvalidPasswordEmpty";
+                case "InvalidPasswordLength": return "msg_InvalidPasswordLength";
+                case "InvalidPasswordUppercase": return "msg_InvalidPasswordUppercase";
+                case "InvalidPasswordLowercase": return "msg_InvalidPasswordLowercase";
+                case "InvalidPasswordDigit": return "msg_InvalidPasswordDigit";
+                case "InvalidPasswordSpecial": return "msg_InvalidPasswordSpecial";
+
+                // Email
+                case "InvalidEmailEmpty": return "msg_InvalidEmailEmpty";
+                case "InvalidEmailTooLong": return "msg_InvalidEmailTooLong";
+                case "InvalidEmailFormat": return "msg_InvalidEmailFormat";
+
+                // ========================
+                // SONIDO
+                // ========================
                 case "SoundSettingsUpdated": return "msg_SoundSettingsUpdated";
                 case "SoundSettingsError": return "msg_SoundSettingsError";
 
+                // ========================
+                // DEFAULT
+                // ========================
                 default:
                     return "msg_UnknownError";
             }

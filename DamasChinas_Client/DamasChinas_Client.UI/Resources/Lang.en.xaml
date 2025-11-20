@@ -196,26 +196,42 @@
 
     <sys:String x:Key="processCompletedTitle">Process completed</sys:String>
     <sys:String x:Key="processCompletedInstruction">Your registration has been successfully completed.</sys:String>
-  
+
 
 
     <!-- ========================================================= -->
     <!--  RESULT MESSAGES (SERVER / MESSAGECODE)                    -->
     <!-- ========================================================= -->
 
+    <!-- Resultados generales -->
     <sys:String x:Key="msg_Success">Operation completed successfully.</sys:String>
     <sys:String x:Key="msg_LoginInvalidCredentials">Invalid username or password.</sys:String>
     <sys:String x:Key="msg_UserDuplicateEmail">Email is already registered.</sys:String>
     <sys:String x:Key="msg_UserNotFound">User not found.</sys:String>
+
+    <!-- Lobby / Partidas -->
     <sys:String x:Key="msg_MatchCreationFailed">Could not create the match.</sys:String>
+    <sys:String x:Key="msg_LobbyNotFound">The lobby could not be found.</sys:String>
+    <sys:String x:Key="msg_LobbyInactive">This lobby is no longer active.</sys:String>
+    <sys:String x:Key="msg_LobbyUserBanned">You are banned from this lobby.</sys:String>
+    <sys:String x:Key="msg_LobbyClosed">The lobby has been closed by the host.</sys:String>
+
+    <!-- Backend / servidor -->
     <sys:String x:Key="msg_ServerUnavailable">Server unavailable, please try again later.</sys:String>
     <sys:String x:Key="msg_NetworkLatency">Network latency detected.</sys:String>
     <sys:String x:Key="msg_UnknownError">An unexpected error occurred. Please try again.</sys:String>
+
+    <!-- Recuperación / cambios -->
     <sys:String x:Key="msg_PasswordUpdated">Password updated successfully.</sys:String>
+    <sys:String x:Key="msg_PasswordChangeSuccess">Your password has been updated successfully.</sys:String>
+
+    <!-- Funciones no disponibles -->
     <sys:String x:Key="msg_FeatureUnavailable">This feature is not available yet.</sys:String>
     <sys:String x:Key="msg_GuestFeatureOnly">This feature is only available for registered users.</sys:String>
     <sys:String x:Key="msg_TutorialUnavailable">The tutorial is not available yet.</sys:String>
     <sys:String x:Key="msg_GuestStatsUnavailable">Statistics are not available for guest users.</sys:String>
+
+    <!-- Navegación / módulos -->
     <sys:String x:Key="msg_ProfileOpenError">Could not open the profile page.</sys:String>
     <sys:String x:Key="msg_CreateLobbyError">Could not create the game lobby.</sys:String>
     <sys:String x:Key="msg_JoinPartyOpenError">Could not open the join party page.</sys:String>
@@ -225,40 +241,38 @@
     <sys:String x:Key="msg_FriendRemoved">Friend removed successfully.</sys:String>
     <sys:String x:Key="msg_ChatComingSoon">Chat feature coming soon.</sys:String>
     <sys:String x:Key="msg_SelectLanguageFirst">Select a language before applying.</sys:String>
+
+    <!-- Verificación de código -->
     <sys:String x:Key="msg_EmptyVerificationCode">Please enter the verification code.</sys:String>
     <sys:String x:Key="msg_VerificationSuccess">Verification completed successfully.</sys:String>
     <sys:String x:Key="msg_InvalidVerificationCode">The verification code is incorrect.</sys:String>
     <sys:String x:Key="msg_VerificationCodeExpired">The verification code has expired.</sys:String>
     <sys:String x:Key="msg_VerificationCodeNotFound">No verification code was generated for this email.</sys:String>
 
+    <!-- Email / recuperación -->
     <sys:String x:Key="msg_EmptyEmail">Email cannot be empty.</sys:String>
     <sys:String x:Key="msg_RecoveryCodeSent">We have sent you a verification code.</sys:String>
-    <sys:String x:Key="msg_PasswordChangeSuccess">Your password has been updated successfully.</sys:String>
-
-
 
     <!-- ========================================================= -->
-    <!--  Tittle                   -->
+    <!--  TITLES                                                   -->
     <!-- ========================================================= -->
     <sys:String x:Key="title_Success">Success</sys:String>
     <sys:String x:Key="title_Warning">Warning</sys:String>
     <sys:String x:Key="title_Error">Error</sys:String>
     <sys:String x:Key="title_Fail">Failure</sys:String>
-    <sys:String x:Key="title_Information">Información</sys:String>
+    <sys:String x:Key="title_Information">Information</sys:String>
     <sys:String x:Key="forgotPasswordTitle">Forgot Password</sys:String>
     <sys:String x:Key="newPassword">New Password</sys:String>
 
-
-
-
-
-
-
-    <!-- Specific Module Messages -->
+    <!-- ========================================================= -->
+    <!--  SOUND MODULE                                             -->
+    <!-- ========================================================= -->
     <sys:String x:Key="msg_SoundSettingsUpdated">Sound settings updated successfully.</sys:String>
     <sys:String x:Key="msg_SoundSettingsError">Could not update sound settings.</sys:String>
 
-    <!-- Universal / Validation Codes -->
+    <!-- ========================================================= -->
+    <!--  UNIVERSAL / VALIDATION CODES (GENÉRICOS)                 -->
+    <!-- ========================================================= -->
     <sys:String x:Key="msg_EmptyCredentials">Fields cannot be empty.</sys:String>
     <sys:String x:Key="msg_PasswordsDontMatch">Passwords do not match.</sys:String>
     <sys:String x:Key="msg_InvalidPassword">The password does not meet the requirements.</sys:String>
@@ -269,21 +283,48 @@
     <sys:String x:Key="msg_UserProfileNotFound">User profile not found.</sys:String>
     <sys:String x:Key="msg_FriendsLoadError">Could not load friends list.</sys:String>
 
-    <!-- Interaction / Navigation -->
+    <!-- Chat / navigation -->
     <sys:String x:Key="msg_ChatOpenError">Unable to open chat.</sys:String>
     <sys:String x:Key="msg_ChatUnavailable">Chat feature is unavailable at this time.</sys:String>
     <sys:String x:Key="msg_NavigationError">An error occurred while navigating.</sys:String>
 
-    <!-- Verification / Codes -->
+    <!-- Verification -->
     <sys:String x:Key="msg_CodeSendingError">Error sending verification code.</sys:String>
     <sys:String x:Key="msg_CodeSentSuccessfully">Verification code sent successfully.</sys:String>
 
-    <!-- Sound / UI Internal -->
+    <!-- Sound -->
     <sys:String x:Key="msg_SoundVolumeInvalid">Invalid sound volume value.</sys:String>
 
-    <!-- Operations -->
+    <!-- General operations -->
     <sys:String x:Key="msg_OperationInterrupted">Operation interrupted due to a validation failure.</sys:String>
+    <sys:String x:Key="msg_UserValidationError">Some of your data is invalid. Please review the fields.</sys:String>
 
+    <!-- ========================================================= -->
+    <!--  VALIDATOR.cs — SERVER VALIDATION MESSAGES                -->
+    <!-- ========================================================= -->
+
+    <!-- NAME -->
+    <sys:String x:Key="msg_InvalidNameEmpty">Name cannot be empty.</sys:String>
+    <sys:String x:Key="msg_InvalidNameLength">Name must be between 2 and 50 characters.</sys:String>
+    <sys:String x:Key="msg_InvalidNameCharacters">The name contains invalid characters.</sys:String>
+
+    <!-- USERNAME -->
+    <sys:String x:Key="msg_InvalidUsernameEmpty">Username cannot be empty.</sys:String>
+    <sys:String x:Key="msg_InvalidUsernameLength">Username must be between 3 and 15 characters.</sys:String>
+    <sys:String x:Key="msg_InvalidUsernameCharacters">The username contains invalid characters.</sys:String>
+
+    <!-- PASSWORD -->
+    <sys:String x:Key="msg_InvalidPasswordEmpty">Password cannot be empty.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordLength">Password must be at least 8 characters long.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordUppercase">Password must contain at least one uppercase letter.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordLowercase">Password must contain at least one lowercase letter.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordDigit">Password must contain at least one number.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordSpecial">Password must contain at least one special character.</sys:String>
+
+    <!-- EMAIL -->
+    <sys:String x:Key="msg_InvalidEmailEmpty">Email cannot be empty.</sys:String>
+    <sys:String x:Key="msg_InvalidEmailTooLong">The email is too long.</sys:String>
+    <sys:String x:Key="msg_InvalidEmailFormat">The email format is invalid.</sys:String>
 
 
 

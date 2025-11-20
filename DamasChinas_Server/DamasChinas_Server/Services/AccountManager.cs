@@ -2,7 +2,6 @@ using DamasChinas_Server.Common;
 using DamasChinas_Server.Contracts;
 using DamasChinas_Server.Dtos;
 using DamasChinas_Server.Interfaces;
-using DamasChinas_Server.Services;
 using System;
 using System.Data.SqlClient;
 using System.ServiceModel;
@@ -25,12 +24,10 @@ namespace DamasChinas_Server.Services
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-
         public PublicProfile GetPublicProfile(int idUser)
         {
             return _repository.GetPublicProfile(idUser);
         }
-
 
         public OperationResult ChangeUsername(string username, string newUsername)
         {
@@ -52,7 +49,6 @@ namespace DamasChinas_Server.Services
                 "ChangeUsername"
             );
         }
-
 
         public OperationResult ChangePassword(string email, string newPassword)
         {
@@ -82,9 +78,11 @@ namespace DamasChinas_Server.Services
 
                 result.Success = success;
                 result.Code = success ? successCode : failureCode;
+
+                // Solo bitácora interna. NO ES mensaje para el usuario.
                 result.TechnicalDetail = success
-                    ? $"{context} executed successfully."
-                    : $"{context} failed due to business conditions.";
+                    ? $"Operation '{context}' executed successfully."
+                    : $"Operation '{context}' failed during business logic.";
 
                 System.Diagnostics.Debug.WriteLine(success
                     ? $"[TRACE] {context} completed successfully."
@@ -96,7 +94,10 @@ namespace DamasChinas_Server.Services
             {
                 result.Success = false;
                 result.Code = fatalCode;
-                result.TechnicalDetail = ex.Message;
+
+                // Mensaje técnico interno permitido. Nunca mostrado en UI.
+                result.TechnicalDetail = $"SQL Exception in {context}: {ex.Number} - {ex.Message}";
+
                 System.Diagnostics.Debug.WriteLine($"[FATAL] SQL error in {context}: {ex.Message}");
                 return result;
             }
@@ -104,7 +105,7 @@ namespace DamasChinas_Server.Services
             {
                 result.Success = false;
                 result.Code = failureCode;
-                result.TechnicalDetail = ex.Message;
+                result.TechnicalDetail = $"Argument exception in {context}.";
                 System.Diagnostics.Debug.WriteLine($"[ERROR] Invalid argument in {context}: {ex.Message}");
                 return result;
             }
@@ -112,7 +113,7 @@ namespace DamasChinas_Server.Services
             {
                 result.Success = false;
                 result.Code = failureCode;
-                result.TechnicalDetail = ex.Message;
+                result.TechnicalDetail = $"Invalid operation in {context}.";
                 System.Diagnostics.Debug.WriteLine($"[ERROR] Invalid operation in {context}: {ex.Message}");
                 return result;
             }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DamasChinas_Server.Common
 {
@@ -20,10 +16,20 @@ namespace DamasChinas_Server.Common
         UserDuplicateEmail = 1002,
         UserNotFound = 1003,
 
+        UserValidationError = 1201,
+        VerificationCodeNotFound = 1202,
+        VerificationCodeExpired = 1203,
+        VerificationCodeInvalid = 1204,
+        VerificationCodeSendError = 1205,
+
         // ========================
         // Partidas / Lobby
         // ========================
         MatchCreationFailed = 1100,
+        LobbyNotFound = 1101,
+        LobbyInactive = 1102,
+        LobbyUserBanned = 1103,
+        LobbyClosed = 1104,
 
         // ========================
         // Backend / Servidor
@@ -33,7 +39,7 @@ namespace DamasChinas_Server.Common
         UnknownError = 9999,
 
         // ========================
-        // Validaciones universales
+        // Validaciones universales 
         // ========================
         EmptyCredentials = 3001,
         PasswordsDontMatch = 3002,
@@ -50,6 +56,34 @@ namespace DamasChinas_Server.Common
         CodeSendingError = 3013,
         CodeSentSuccessfully = 3014,
         ChatUnavailable = 3015,
+        UsernameExists = 3016,
+
+        // ========================
+        // Validaciones específicas
+        // ========================
+
+        // Name
+        InvalidNameEmpty = 3100,
+        InvalidNameLength = 3101,
+        InvalidNameCharacters = 3102,
+
+        // Username
+        InvalidUsernameEmpty = 3110,
+        InvalidUsernameLength = 3111,
+        InvalidUsernameCharacters = 3112,
+
+        // Password
+        InvalidPasswordEmpty = 3120,
+        InvalidPasswordLength = 3121,
+        InvalidPasswordUppercase = 3122,
+        InvalidPasswordLowercase = 3123,
+        InvalidPasswordDigit = 3124,
+        InvalidPasswordSpecial = 3125,
+
+        // Email
+        InvalidEmailEmpty = 3130,
+        InvalidEmailTooLong = 3131,
+        InvalidEmailFormat = 3132,
 
         // ========================
         // Sonido

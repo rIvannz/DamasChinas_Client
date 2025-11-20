@@ -3,45 +3,48 @@ using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
+using DamasChinas_Server.Common;
 using DamasChinas_Server.Dtos;
 using DamasChinas_Server.Utilidades;
 
 namespace DamasChinas_Server
 {
-	public class RepositoryUsers
-	{
-		private readonly Func<damas_chinasEntities> _contextFactory;
+    public class RepositoryUsers
+    {
+        private readonly Func<damas_chinasEntities> _contextFactory;
 
-		public RepositoryUsers()
-			: this(DbContextFactory.Create)
-		{
-		}
+        public RepositoryUsers()
+            : this(DbContextFactory.Create)
+        {
+        }
 
-		public RepositoryUsers(Func<damas_chinasEntities> contextFactory)
-		{
-			_contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
-		}
+        public RepositoryUsers(Func<damas_chinasEntities> contextFactory)
+        {
+            _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
+        }
 
         public void ValidateCreateUser(UserDto userDto)
         {
+            // Validaciones de formato/longitud del servidor
             Validator.ValidateUserDto(userDto);
 
             ExecuteInContext(db =>
             {
                 if (EntityExists<usuarios>(db, u => u.correo == userDto.Email))
                 {
-                    throw new InvalidOperationException("Ya existe un usuario con ese correo.");
+                    // Email ya registrado
+                    throw new RepositoryValidationException(MessageCode.UserDuplicateEmail);
                 }
 
                 if (EntityExists<perfiles>(db, p => p.username.Equals(userDto.Username, StringComparison.OrdinalIgnoreCase)))
                 {
-                    throw new InvalidOperationException("Ya existe un perfil con ese nombre de usuario.");
+                    // Username ya existente (usa tu msg_UsernameExists)
+                    throw new RepositoryValidationException(MessageCode.UsernameExists);
                 }
 
                 return true;
             });
         }
-
 
         public usuarios CreateUser(UserDto userDto)
         {
@@ -54,56 +57,58 @@ namespace DamasChinas_Server
             });
         }
 
-
         public PublicProfile Login(LoginRequest loginRequest)
-		{
-			Validator.ValidateLoginRequest(loginRequest);
+        {
+            Validator.ValidateLoginRequest(loginRequest);
 
-			return ExecuteInContext(db =>
-			{
-				var user = FindUserForLogin(db, loginRequest.Username);
+            return ExecuteInContext(db =>
+            {
+                var user = FindUserForLogin(db, loginRequest.Username);
 
-				if (user == null || user.password_hash != loginRequest.Password)
-				{
-					throw new UnauthorizedAccessException("Credenciales inválidas.");
-				}
-				return BuildPublicProfile(user);
-			});
-		}
+                if (user == null || user.password_hash != loginRequest.Password)
+                {
+                    throw new RepositoryValidationException(MessageCode.LoginInvalidCredentials);
+                }
 
-		public PublicProfile GetPublicProfile(int idUsuario)
-		{
-			return ExecuteInContext(db =>
-			{
-				var user = GetUserWithProfile(db, idUsuario);
-				return BuildPublicProfile(user);
-			});
-		}
+                return BuildPublicProfile(user);
+            });
+        }
 
-		public bool ChangeUsername(string username, string newUsername)
-		{
-			Validator.ValidateUsername(newUsername);
+        public PublicProfile GetPublicProfile(int idUsuario)
+        {
+            return ExecuteInContext(db =>
+            {
+                var user = GetUserWithProfile(db, idUsuario);
+                return BuildPublicProfile(user);
+            });
+        }
 
-			var currentUsername = username?.Trim();
-			if (string.IsNullOrWhiteSpace(currentUsername))
-			{
-				throw new ArgumentException("El nombre de usuario original es inválido.", nameof(username));
-			}
-			return ExecuteInContext(db =>
-			{
-				if (EntityExists<perfiles>(db, p => p.username.Equals(newUsername, StringComparison.OrdinalIgnoreCase)))
-				{
-					throw new InvalidOperationException("El nombre de usuario ya está en uso.");
-				}
-				var perfil = GetPerfilByUsername(db, currentUsername);
+        public bool ChangeUsername(string username, string newUsername)
+        {
+            Validator.ValidateUsername(newUsername);
 
-				perfil.username = newUsername;
-				db.Entry(perfil).Property(p => p.username).IsModified = true;
-				SaveChangesSafely(db);
+            var currentUsername = username?.Trim();
+            if (string.IsNullOrWhiteSpace(currentUsername))
+            {
+                throw new RepositoryValidationException(MessageCode.UsernameEmpty);
+            }
 
-				return true;
-			});
-		}
+            return ExecuteInContext(db =>
+            {
+                if (EntityExists<perfiles>(db, p => p.username.Equals(newUsername, StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw new RepositoryValidationException(MessageCode.UsernameExists);
+                }
+
+                var perfil = GetPerfilByUsername(db, currentUsername);
+
+                perfil.username = newUsername;
+                db.Entry(perfil).Property(p => p.username).IsModified = true;
+                SaveChangesSafely(db);
+
+                return true;
+            });
+        }
 
         public bool ChangePassword(string username, string newPassword)
         {
@@ -117,7 +122,9 @@ namespace DamasChinas_Server
                                select u).FirstOrDefault();
 
                 if (usuario == null)
-                    throw new InvalidOperationException("No se encontró el usuario con ese nombre de usuario.");
+                {
+                    throw new RepositoryValidationException(MessageCode.UserNotFound);
+                }
 
                 usuario.password_hash = newPassword;
                 SaveChangesSafely(db);
@@ -125,145 +132,141 @@ namespace DamasChinas_Server
             });
         }
 
-
         public int GetUserIdByUsername(string username)
-		{
-			Validator.ValidateUsername(username);
+        {
+            Validator.ValidateUsername(username);
 
-			return ExecuteInContext(db =>
-			{
-				var perfil = GetPerfilByUsername(db, username, "No se encontró ningún usuario con ese nombre");
-				return perfil.id_usuario;
-			});
-		}
+            return ExecuteInContext(db =>
+            {
+                // Si no hay perfil, lanzará UserProfileNotFound
+                var perfil = GetPerfilByUsername(db, username);
+                return perfil.id_usuario;
+            });
+        }
 
-		private damas_chinasEntities CreateContext()
-		{
-			return _contextFactory();
-		}
+        // ============================
+        // Helpers internos
+        // ============================
 
-		private T ExecuteInContext<T>(Func<damas_chinasEntities, T> operation)
-		{
-			using (var db = CreateContext())
-			{
-				return operation(db);
-			}
-		}
+        private damas_chinasEntities CreateContext()
+        {
+            return _contextFactory();
+        }
 
-		private static usuarios FindUserForLogin(damas_chinasEntities db, string credential)
-		{
-			return db.usuarios
-					 .Include(u => u.perfiles)
-					 .FirstOrDefault(u =>
-						 u.correo == credential ||
-						 u.perfiles.Any(p => p.username == credential));
-		}
+        private T ExecuteInContext<T>(Func<damas_chinasEntities, T> operation)
+        {
+            using (var db = CreateContext())
+            {
+                return operation(db);
+            }
+        }
 
-		private static bool EntityExists<T>(damas_chinasEntities db, Expression<Func<T, bool>> predicate) where T : class
-		{
-			return db.Set<T>().Any(predicate);
-		}
+        private static usuarios FindUserForLogin(damas_chinasEntities db, string credential)
+        {
+            return db.usuarios
+                     .Include(u => u.perfiles)
+                     .FirstOrDefault(u =>
+                         u.correo == credential ||
+                         u.perfiles.Any(p => p.username == credential));
+        }
 
-		private static T GetEntityOrThrow<T>(damas_chinasEntities db, Expression<Func<T, bool>> predicate, string errorMessage) where T : class
-		{
-			var entity = db.Set<T>().SingleOrDefault(predicate);
-			if (entity == null)
-			{
-				throw new InvalidOperationException(errorMessage);
-			}
-			return entity;
-		}
+        private static bool EntityExists<T>(damas_chinasEntities db, Expression<Func<T, bool>> predicate)
+            where T : class
+        {
+            return db.Set<T>().Any(predicate);
+        }
 
-		private static perfiles GetPerfilByUsername(damas_chinasEntities db, string username, string errorMessage = "No se encontró el perfil del usuario")
-		{
-			return GetEntityOrThrow<perfiles>(db,
-				p => p.username.Equals(username, StringComparison.OrdinalIgnoreCase),
-				errorMessage);
-		}
+        private static perfiles GetPerfilByUsername(damas_chinasEntities db, string username)
+        {
+            var perfil = db.perfiles.SingleOrDefault(
+                p => p.username.Equals(username, StringComparison.OrdinalIgnoreCase));
 
-		private static usuarios GetUserWithProfile(damas_chinasEntities db, int idUsuario)
-		{
-			var user = db.usuarios
-						 .Include(u => u.perfiles)
-						 .SingleOrDefault(u => u.id_usuario == idUsuario);
+            if (perfil == null)
+            {
+                throw new RepositoryValidationException(MessageCode.UserProfileNotFound);
+            }
 
-			if (user == null)
-			{
-				throw new InvalidOperationException("No se encontró el usuario especificado.");
-			}
-			return user;
-		}
+            return perfil;
+        }
 
-		private static PublicProfile BuildPublicProfile(usuarios user)
-		{
-			if (user == null)
-			{
-				throw new ArgumentNullException(nameof(user));
-			}
-			var perfil = user.perfiles.FirstOrDefault();
+        private static usuarios GetUserWithProfile(damas_chinasEntities db, int idUsuario)
+        {
+            var user = db.usuarios
+                         .Include(u => u.perfiles)
+                         .SingleOrDefault(u => u.id_usuario == idUsuario);
 
-			return new PublicProfile
-			{
-				Username = perfil?.username ?? "N/A",
-				Name = perfil?.nombre ?? "N/A",
-				LastName = perfil?.apellido_materno ?? "N/A",
-				SocialUrl = perfil?.url ?? "N/A",
-				Email = user.correo
-			};
-		}
+            if (user == null)
+            {
+                throw new RepositoryValidationException(MessageCode.UserNotFound);
+            }
 
-		private static usuarios CreateUsuario(damas_chinasEntities db, UserDto userDto)
-		{
-			var usuario = new usuarios
-			{
-				correo = userDto.Email,
-				password_hash = userDto.Password,
-				rol = "cliente",
-				fecha_creacion = DateTime.UtcNow
-			};
+            return user;
+        }
 
-			db.usuarios.Add(usuario);
-			SaveChangesSafely(db);
-			return usuario;
-		}
+        private static PublicProfile BuildPublicProfile(usuarios user)
+        {
+            if (user == null)
+            {
+                throw new RepositoryValidationException(MessageCode.UserNotFound);
+            }
 
-		private static perfiles CreatePerfil(damas_chinasEntities db, usuarios usuario, UserDto userDto)
-		{
-			var perfil = new perfiles
-			{
-				id_usuario = usuario.id_usuario,
-				username = userDto.Username,
-				nombre = userDto.Name,
-				apellido_materno = userDto.LastName,
-				url = string.Empty,
-				imagen_perfil = null,
-				ultimo_login = null
-			};
+            var perfil = user.perfiles.FirstOrDefault();
 
-			db.perfiles.Add(perfil);
-			SaveChangesSafely(db);
-			return perfil;
-		}
+            return new PublicProfile
+            {
+                Username = perfil?.username ?? "N/A",
+                Name = perfil?.nombre ?? "N/A",
+                LastName = perfil?.apellido_materno ?? "N/A",
+                SocialUrl = perfil?.url ?? "N/A",
+                Email = user.correo
+            };
+        }
 
-		private static void SaveChangesSafely(damas_chinasEntities db)
-		{
-			try
-			{
-				db.SaveChanges();
-			}
-			catch (DbEntityValidationException ex)
-			{
-				foreach (var eve in ex.EntityValidationErrors)
-				{
-					Console.WriteLine($"Entidad: {eve.Entry.Entity.GetType().Name}");
-					foreach (var ve in eve.ValidationErrors)
-					{
-						Console.WriteLine($"Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
-					}
-				}
+        private static usuarios CreateUsuario(damas_chinasEntities db, UserDto userDto)
+        {
+            var usuario = new usuarios
+            {
+                correo = userDto.Email,
+                password_hash = userDto.Password,
+                rol = "cliente",
+                fecha_creacion = DateTime.UtcNow
+            };
 
-				throw;
-			}
-		}
-	}
+            db.usuarios.Add(usuario);
+            SaveChangesSafely(db);
+            return usuario;
+        }
+
+        private static perfiles CreatePerfil(damas_chinasEntities db, usuarios usuario, UserDto userDto)
+        {
+            var perfil = new perfiles
+            {
+                id_usuario = usuario.id_usuario,
+                username = userDto.Username,
+                nombre = userDto.Name,
+                apellido_materno = userDto.LastName,
+                url = string.Empty,
+                imagen_perfil = null,
+                ultimo_login = null
+            };
+
+            db.perfiles.Add(perfil);
+            SaveChangesSafely(db);
+            return perfil;
+        }
+
+        private static void SaveChangesSafely(damas_chinasEntities db)
+        {
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException)
+            {
+                // Si hay error de validación a nivel EF, lo marcamos como error desconocido
+                throw new RepositoryValidationException(MessageCode.UnknownError);
+            }
+        }
+    }
 }
+

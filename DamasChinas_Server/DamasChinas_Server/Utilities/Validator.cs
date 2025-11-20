@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using DamasChinas_Server.Dtos;
+using DamasChinas_Server.Common;
 
 namespace DamasChinas_Server.Utilidades
 {
@@ -14,84 +15,101 @@ namespace DamasChinas_Server.Utilidades
         private const int EmailMaxLength = 100;
 
         private static readonly Regex NameRegex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$", RegexOptions.Compiled);
+
         private static readonly Regex UsernameRegex = new Regex("^[a-zA-Z0-9_-]+$", RegexOptions.Compiled);
+
         private static readonly Regex PasswordUppercaseRegex = new Regex("[A-Z]", RegexOptions.Compiled);
+
         private static readonly Regex PasswordLowercaseRegex = new Regex("[a-z]", RegexOptions.Compiled);
+
         private static readonly Regex PasswordDigitRegex = new Regex("[0-9]", RegexOptions.Compiled);
-        private static readonly Regex PasswordSpecialRegex = new Regex("[\\W_]", RegexOptions.Compiled);
+
+        private static readonly Regex PasswordSpecialRegex =  new Regex("[\\W_]", RegexOptions.Compiled);
+
         private static readonly Regex EmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", RegexOptions.Compiled);
 
         private static string Normalize(string value) => value?.Trim();
+
+
 
         public static void ValidateName(string name)
         {
             name = Normalize(name);
 
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("El nombre no puede estar vacío.");
+                throw new RepositoryValidationException(MessageCode.InvalidNameEmpty);
 
             if (name.Length < NombreMinLength || name.Length > NombreMaxLength)
-                throw new ArgumentException($"El nombre debe tener entre {NombreMinLength} y {NombreMaxLength} caracteres.");
+                throw new RepositoryValidationException(MessageCode.InvalidNameLength);
 
             if (!NameRegex.IsMatch(name))
-                throw new ArgumentException("El nombre contiene caracteres inválidos.");
+                throw new RepositoryValidationException(MessageCode.InvalidNameCharacters);
         }
+
+
 
         public static void ValidateUsername(string username)
         {
             username = Normalize(username);
 
             if (string.IsNullOrWhiteSpace(username))
-                throw new ArgumentException("El nombre de usuario no puede estar vacío.");
+                throw new RepositoryValidationException(MessageCode.InvalidUsernameEmpty);
 
             if (username.Length < UsernameMinLength || username.Length > UsernameMaxLength)
-                throw new ArgumentException($"El nombre de usuario debe tener entre {UsernameMinLength} y {UsernameMaxLength} caracteres.");
+                throw new RepositoryValidationException(MessageCode.InvalidUsernameLength);
 
             if (!UsernameRegex.IsMatch(username))
-                throw new ArgumentException("El nombre de usuario contiene caracteres inválidos.");
+                throw new RepositoryValidationException(MessageCode.InvalidUsernameCharacters);
         }
 
+
+
+        
         public static void ValidatePassword(string password)
         {
             password = Normalize(password);
 
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("La contraseña no puede estar vacía.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordEmpty);
 
             if (password.Length < PasswordMinLength)
-                throw new ArgumentException($"La contraseña debe tener al menos {PasswordMinLength} caracteres.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordLength);
 
             if (!PasswordUppercaseRegex.IsMatch(password))
-                throw new ArgumentException("La contraseña debe tener al menos una letra mayúscula.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordUppercase);
 
             if (!PasswordLowercaseRegex.IsMatch(password))
-                throw new ArgumentException("La contraseña debe tener al menos una letra minúscula.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordLowercase);
 
             if (!PasswordDigitRegex.IsMatch(password))
-                throw new ArgumentException("La contraseña debe tener al menos un número.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordDigit);
 
             if (!PasswordSpecialRegex.IsMatch(password))
-                throw new ArgumentException("La contraseña debe tener al menos un carácter especial.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordSpecial);
         }
+
+
 
         public static void ValidateEmail(string email)
         {
             email = Normalize(email);
 
             if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("El correo no puede estar vacío.");
+                throw new RepositoryValidationException(MessageCode.InvalidEmailEmpty);
 
             if (email.Length > EmailMaxLength)
-                throw new ArgumentException("El correo es demasiado largo.");
+                throw new RepositoryValidationException(MessageCode.InvalidEmailTooLong);
 
             if (!EmailRegex.IsMatch(email))
-                throw new ArgumentException("El correo tiene un formato inválido.");
+                throw new RepositoryValidationException(MessageCode.InvalidEmailFormat);
         }
+
+
 
         public static void ValidateUserDto(UserDto userDto)
         {
             if (userDto == null)
-                throw new ArgumentNullException("El objeto UserDto no puede ser nulo.");
+                throw new RepositoryValidationException(MessageCode.UserValidationError);
 
             userDto.Name = Normalize(userDto.Name);
             userDto.LastName = Normalize(userDto.LastName);
@@ -104,16 +122,19 @@ namespace DamasChinas_Server.Utilidades
             ValidateUsername(userDto.Username);
         }
 
+
+
+    
         public static void ValidateLoginRequest(LoginRequest loginRequest)
         {
             if (loginRequest == null)
-                throw new ArgumentNullException("El objeto LoginRequest no puede ser nulo.");
+                throw new RepositoryValidationException(MessageCode.UserValidationError);
 
             loginRequest.Username = Normalize(loginRequest.Username);
             loginRequest.Password = Normalize(loginRequest.Password);
 
             if (string.IsNullOrWhiteSpace(loginRequest.Username))
-                throw new ArgumentException("El usuario o correo es requerido.");
+                throw new RepositoryValidationException(MessageCode.InvalidUsernameEmpty);
 
             if (loginRequest.Username.Contains("@"))
                 ValidateEmail(loginRequest.Username);
@@ -121,7 +142,8 @@ namespace DamasChinas_Server.Utilidades
                 ValidateUsername(loginRequest.Username);
 
             if (string.IsNullOrWhiteSpace(loginRequest.Password))
-                throw new ArgumentException("La contraseña es requerida.");
+                throw new RepositoryValidationException(MessageCode.InvalidPasswordEmpty);
         }
     }
 }
+

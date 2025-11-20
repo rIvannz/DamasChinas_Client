@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 
 namespace DamasChinas_Server
 {
-
     public class SingInService : ISingInService
     {
-        private static readonly Dictionary<string, (string Code, DateTime Created)> _codes = new Dictionary<string, (string Code, DateTime Created)>();
+        private static readonly Dictionary<string, (string Code, DateTime Created)> _codes =
+            new Dictionary<string, (string Code, DateTime Created)>();
+
         private readonly RepositoryUsers _repository;
 
         public SingInService()
@@ -23,66 +24,76 @@ namespace DamasChinas_Server
             _repository = new RepositoryUsers();
         }
 
-
+     
         public OperationResult ValidateUserData(UserDto userDto)
         {
-            var result = new OperationResult();
-
             try
             {
                 _repository.ValidateCreateUser(userDto);
 
-                result.Success = true;
-                result.Code = MessageCode.Success;
-                result.TechnicalDetail = "Validation OK.";
-
                 System.Diagnostics.Debug.WriteLine("[TRACE] User validation successful.");
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Code = MessageCode.Success,
+                    TechnicalDetail = "Validation completed."
+                };
+            }
+            catch (RepositoryValidationException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Repo validation failed: {ex.Code}");
+
+                return new OperationResult
+                {
+                    Success = false,
+                    Code = ex.Code,
+                    TechnicalDetail = $"Repository validation error: {ex.Code}"
+                };
             }
             catch (ArgumentException ex)
             {
-                result.Success = false;
-                result.Code = MessageCode.UserDuplicateEmail;
-                result.TechnicalDetail = ex.Message;
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Argument validation error: {ex.Message}");
 
-                System.Diagnostics.Debug.WriteLine($"[ERROR] Argument validation failed: {ex.Message}");
+                return new OperationResult
+                {
+                    Success = false,
+                    Code = MessageCode.UserValidationError,
+                    TechnicalDetail = "Argument validation failure."
+                };
             }
             catch (SqlException ex)
             {
-                result.Success = false;
-                result.Code = MessageCode.ServerUnavailable;
-                result.TechnicalDetail = ex.Message;
+                System.Diagnostics.Debug.WriteLine($"[FATAL] SQL error in ValidateUserData: {ex.Message}");
 
-                System.Diagnostics.Debug.WriteLine($"[FATAL] Database error during validation: {ex.Message}");
-            }
-            catch (InvalidOperationException ex)
-            {
-                result.Success = false;
-                result.Code = MessageCode.UnknownError;
-                result.TechnicalDetail = ex.Message;
-
-                System.Diagnostics.Debug.WriteLine($"[ERROR] Business rule validation failed: {ex.Message}");
+                return new OperationResult
+                {
+                    Success = false,
+                    Code = MessageCode.ServerUnavailable,
+                    TechnicalDetail = $"SQL error: {ex.Number}"
+                };
             }
             catch (Exception ex)
             {
-                result.Success = false;
-                result.Code = MessageCode.UnknownError;
-                result.TechnicalDetail = ex.Message;
+                System.Diagnostics.Debug.WriteLine($"[FATAL] Unexpected error in ValidateUserData: {ex.Message}");
 
-                System.Diagnostics.Debug.WriteLine($"[FATAL] Unexpected exception in ValidateUser: {ex.Message}");
+                return new OperationResult
+                {
+                    Success = false,
+                    Code = MessageCode.UnknownError,
+                    TechnicalDetail = "Unexpected exception"
+                };
             }
-            finally
-            {
-                System.Diagnostics.Debug.WriteLine("[TRACE] ValidateUser operation finished.");
-            }
-
-            return result;
         }
 
+
+       
         public OperationResult RequestVerificationCode(string email)
         {
             try
             {
                 var code = GenerateCode();
+
                 lock (_codes)
                 {
                     _codes[email] = (code, DateTime.Now);
@@ -92,15 +103,25 @@ namespace DamasChinas_Server
 
                 var result = OperationResult.Ok();
                 result.Code = MessageCode.CodeSentSuccessfully;
+                result.TechnicalDetail = "Verification code generated.";
+
                 return result;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[ERROR] Failed to send verification code: {ex.Message}");
-                return OperationResult.Fail("code_send_error", MessageCode.CodeSendingError);
+
+                return new OperationResult
+                {
+                    Success = false,
+                    Code = MessageCode.VerificationCodeSendError,
+                    TechnicalDetail = "Email sending failure."
+                };
             }
         }
 
+
+   
         public OperationResult CreateUser(UserDto userDto, string code)
         {
             var result = new OperationResult();
@@ -116,7 +137,12 @@ namespace DamasChinas_Server
                 {
                     if (!_codes.TryGetValue(userDto.Email, out var data))
                     {
-                        return OperationResult.Fail("not_found");
+                        return new OperationResult
+                        {
+                            Success = false,
+                            Code = MessageCode.VerificationCodeNotFound,
+                            TechnicalDetail = "Code not found."
+                        };
                     }
 
                     storedCode = data.Code;
@@ -129,12 +155,23 @@ namespace DamasChinas_Server
                     {
                         _codes.Remove(userDto.Email);
                     }
-                    return OperationResult.Fail("expired");
+
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Code = MessageCode.VerificationCodeExpired,
+                        TechnicalDetail = "Code expired."
+                    };
                 }
 
                 if (!string.Equals(storedCode, code, StringComparison.Ordinal))
                 {
-                    return OperationResult.Fail("invalid");
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Code = MessageCode.VerificationCodeInvalid,
+                        TechnicalDetail = "Invalid code."
+                    };
                 }
 
                 lock (_codes)
@@ -147,17 +184,26 @@ namespace DamasChinas_Server
 
                 SendWelcomeEmail(MapToUserInfo(user, userDto));
             }
+            catch (ArgumentException ex)
+            {
+                result.Success = false;
+                result.Code = MessageCode.UserValidationError;
+                result.TechnicalDetail = "Argument validation failure.";
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Argument exception: {ex.Message}");
+            }
             catch (SqlException ex)
             {
                 result.Success = false;
                 result.Code = MessageCode.ServerUnavailable;
-                result.TechnicalDetail = ex.Message;
+                result.TechnicalDetail = $"SQL error: {ex.Number}";
+                System.Diagnostics.Debug.WriteLine($"[FATAL] SQL exception: {ex.Message}");
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Code = MessageCode.UnknownError;
-                result.TechnicalDetail = ex.Message;
+                result.TechnicalDetail = "Unexpected exception.";
+                System.Diagnostics.Debug.WriteLine($"[FATAL] Unexpected exception: {ex.Message}");
             }
 
             return result;
@@ -180,13 +226,11 @@ namespace DamasChinas_Server
             });
         }
 
-
         private static string GenerateCode()
         {
             var random = new Random();
             return random.Next(1000, 10000).ToString();
         }
-
 
         private UserInfo MapToUserInfo(usuarios user, UserDto userDto)
         {

@@ -216,7 +216,34 @@ namespace DamasChinas_Client.UI.SingInServiceProxy {
         UserNotFound = 1003,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
+        UserValidationError = 1201,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        VerificationCodeNotFound = 1202,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        VerificationCodeExpired = 1203,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        VerificationCodeInvalid = 1204,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        VerificationCodeSendError = 1205,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
         MatchCreationFailed = 1100,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyNotFound = 1101,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyInactive = 1102,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyUserBanned = 1103,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        LobbyClosed = 1104,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ServerUnavailable = 2001,
@@ -271,6 +298,54 @@ namespace DamasChinas_Client.UI.SingInServiceProxy {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ChatUnavailable = 3015,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UsernameExists = 3016,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidNameEmpty = 3100,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidNameLength = 3101,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidNameCharacters = 3102,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidUsernameEmpty = 3110,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidUsernameLength = 3111,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidUsernameCharacters = 3112,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidPasswordEmpty = 3120,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidPasswordLength = 3121,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidPasswordUppercase = 3122,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidPasswordLowercase = 3123,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidPasswordDigit = 3124,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidPasswordSpecial = 3125,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidEmailEmpty = 3130,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidEmailTooLong = 3131,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        InvalidEmailFormat = 3132,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         SoundSettingsUpdated = 4001,

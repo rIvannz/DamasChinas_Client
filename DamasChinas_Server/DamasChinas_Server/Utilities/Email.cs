@@ -12,9 +12,10 @@ namespace DamasChinas_Server.Utilidades
         private const bool EnableSsl = true;
 
         private const string SenderEmail = "damaschinas4u@gmail.com";
-        private const string SenderPassword = "prfd slyq tppc mlni"; // pendiente de implementar el recurso *++++++++++++++++++++++++++++++++++++++++
 
-        private const string ErrorSendingMail = "Error al enviar correo: ";
+        // TODO: Mover a recurso seguro o app.config encriptado
+        private const string SenderPassword = "prfd slyq tppc mlni";
+
         private const string WelcomeSubject = "Bienvenido a Damas Chinas";
         private const string WelcomeBodyTemplate =
             "Hola {0},<br><br>" +
@@ -24,19 +25,20 @@ namespace DamasChinas_Server.Utilidades
             "Atentamente,<br>Equipo Damas Chinas";
 
         /// <summary>
-        /// Envía un correo electrónico genérico mediante el servidor SMTP configurado.
+        /// Envía un correo electrónico mediante SMTP.
+        /// Solo bitácora interna: NO envía texto al cliente.
         /// </summary>
         public static async Task<bool> SendAsync(string receiver, string subject, string body, bool html = true)
         {
             try
             {
-                using (SmtpClient smtp = new SmtpClient(SmtpHost)
+                using (var smtp = new SmtpClient(SmtpHost)
                 {
                     Port = SmtpPort,
                     Credentials = new NetworkCredential(SenderEmail, SenderPassword),
                     EnableSsl = EnableSsl
                 })
-                using (MailMessage message = new MailMessage())
+                using (var message = new MailMessage())
                 {
                     message.From = new MailAddress(SenderEmail);
                     message.To.Add(receiver);
@@ -47,16 +49,23 @@ namespace DamasChinas_Server.Utilidades
                     await smtp.SendMailAsync(message);
                 }
 
+                System.Diagnostics.Debug.WriteLine("[TRACE] Email sent successfully.");
                 return true;
+            }
+            catch (SmtpException smtpEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ERROR] SMTP error sending email: {smtpEx.StatusCode} - {smtpEx.Message}");
+                throw; // Se lanza hacia afuera para que SingInService lo capture
             }
             catch (Exception ex)
             {
-                throw new Exception(ErrorSendingMail + ex.Message, ex);
+                System.Diagnostics.Debug.WriteLine($"[ERROR] Unexpected error sending email: {ex.Message}");
+                throw;
             }
         }
 
         /// <summary>
-        /// Envía un correo de bienvenida utilizando la plantilla estándar.
+        /// Envía correo de bienvenida.
         /// </summary>
         public static async Task EnviarBienvenidaAsync(UserInfo user)
         {
@@ -67,3 +76,4 @@ namespace DamasChinas_Server.Utilidades
         }
     }
 }
+

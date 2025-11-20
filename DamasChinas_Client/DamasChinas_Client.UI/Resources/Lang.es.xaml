@@ -185,19 +185,35 @@
     <!-- ========================================================= -->
     <!--  RESULT MESSAGES (SERVER / MESSAGECODE)                    -->
     <!-- ========================================================= -->
+    <!-- Resultados generales -->
     <sys:String x:Key="msg_Success">Operación realizada correctamente.</sys:String>
     <sys:String x:Key="msg_LoginInvalidCredentials">Usuario o contraseña incorrectos.</sys:String>
     <sys:String x:Key="msg_UserDuplicateEmail">El correo ya está registrado.</sys:String>
     <sys:String x:Key="msg_UserNotFound">Usuario no encontrado.</sys:String>
+
+    <!-- Lobby / Partidas -->
     <sys:String x:Key="msg_MatchCreationFailed">No se pudo crear la partida.</sys:String>
+    <sys:String x:Key="msg_LobbyNotFound">No se encontró la partida.</sys:String>
+    <sys:String x:Key="msg_LobbyInactive">Esta partida ya no está activa.</sys:String>
+    <sys:String x:Key="msg_LobbyUserBanned">Has sido bloqueado de esta partida.</sys:String>
+    <sys:String x:Key="msg_LobbyClosed">La partida ha sido cerrada por el anfitrión.</sys:String>
+
+    <!-- Backend / Servidor -->
     <sys:String x:Key="msg_ServerUnavailable">Servidor no disponible, inténtalo más tarde.</sys:String>
     <sys:String x:Key="msg_NetworkLatency">Se detectó latencia en la conexión.</sys:String>
     <sys:String x:Key="msg_UnknownError">Ocurrió un error inesperado.</sys:String>
+
+    <!-- Recuperación / cambios -->
     <sys:String x:Key="msg_PasswordUpdated">Contraseña actualizada correctamente.</sys:String>
+    <sys:String x:Key="msg_PasswordChangeSuccess">Tu contraseña ha sido actualizada correctamente.</sys:String>
+
+    <!-- Funciones no disponibles -->
     <sys:String x:Key="msg_FeatureUnavailable">Esta función aún no está disponible.</sys:String>
     <sys:String x:Key="msg_GuestFeatureOnly">Esta función está disponible solo para usuarios registrados.</sys:String>
     <sys:String x:Key="msg_TutorialUnavailable">El tutorial aún no está disponible.</sys:String>
     <sys:String x:Key="msg_GuestStatsUnavailable">Las estadísticas no están disponibles para usuarios invitados.</sys:String>
+
+    <!-- Navegación / módulos -->
     <sys:String x:Key="msg_ProfileOpenError">No se pudo abrir el perfil.</sys:String>
     <sys:String x:Key="msg_CreateLobbyError">No se pudo crear la partida.</sys:String>
     <sys:String x:Key="msg_JoinPartyOpenError">No se pudo abrir la página para unirse a partidas.</sys:String>
@@ -207,36 +223,37 @@
     <sys:String x:Key="msg_FriendRemoved">Amigo eliminado correctamente.</sys:String>
     <sys:String x:Key="msg_ChatComingSoon">La función de chat estará disponible pronto.</sys:String>
     <sys:String x:Key="msg_SelectLanguageFirst">Selecciona un idioma antes de aplicar.</sys:String>
+
+    <!-- Verificación de código -->
     <sys:String x:Key="msg_EmptyVerificationCode">Por favor ingresa el código de verificación.</sys:String>
     <sys:String x:Key="msg_VerificationSuccess">La verificación se completó correctamente.</sys:String>
     <sys:String x:Key="msg_InvalidVerificationCode">El código de verificación es incorrecto.</sys:String>
+    <sys:String x:Key="msg_VerificationCodeExpired">El código de verificación ha expirado.</sys:String>
+    <sys:String x:Key="msg_VerificationCodeNotFound">No se generó un código de verificación para este correo.</sys:String>
 
+    <!-- Email / recuperación -->
+    <sys:String x:Key="msg_EmptyEmail">El correo no puede estar vacío.</sys:String>
+    <sys:String x:Key="msg_RecoveryCodeSent">Se ha enviado un código de verificación a tu correo.</sys:String>
 
-
-
+    <!-- ========================================================= -->
+    <!--  Títulos                                                   -->
+    <!-- ========================================================= -->
     <sys:String x:Key="title_Success">Éxito</sys:String>
     <sys:String x:Key="title_Warning">Advertencia</sys:String>
     <sys:String x:Key="title_Error">Error</sys:String>
     <sys:String x:Key="title_Fail">Fallo</sys:String>
     <sys:String x:Key="title_Information">Información</sys:String>
-
-    <sys:String x:Key="msg_EmptyEmail">El correo no puede estar vacío.</sys:String>
-    <sys:String x:Key="msg_RecoveryCodeSent">Se ha enviado un código de verificación a tu correo.</sys:String>
-    <sys:String x:Key="msg_PasswordChangeSuccess">Tu contraseña ha sido actualizada correctamente.</sys:String>
     <sys:String x:Key="forgotPasswordTitle">Olvidé mi contraseña</sys:String>
     <sys:String x:Key="newPassword">Nueva contraseña</sys:String>
-
-
-
-
-
-
 
     <!-- Módulo sonido -->
     <sys:String x:Key="msg_SoundSettingsUpdated">Configuración de sonido actualizada correctamente.</sys:String>
     <sys:String x:Key="msg_SoundSettingsError">No se pudieron actualizar las configuraciones de sonido.</sys:String>
 
-    <!-- Validaciones universales -->
+    <!-- ========================================================= -->
+    <!--  Validaciones universales (GENÉRICAS)                     -->
+    <!-- ========================================================= -->
+
     <sys:String x:Key="msg_EmptyCredentials">Los campos no pueden estar vacíos.</sys:String>
     <sys:String x:Key="msg_PasswordsDontMatch">Las contraseñas no coinciden.</sys:String>
     <sys:String x:Key="msg_InvalidPassword">La contraseña no cumple con los requisitos.</sys:String>
@@ -255,13 +272,40 @@
     <!-- Verificación -->
     <sys:String x:Key="msg_CodeSendingError">Error al enviar el código de verificación.</sys:String>
     <sys:String x:Key="msg_CodeSentSuccessfully">Código de verificación enviado correctamente.</sys:String>
-    <sys:String x:Key="msg_VerificationCodeExpired">El código de verificación ha expirado.</sys:String>
-    <sys:String x:Key="msg_VerificationCodeNotFound">No se generó un código de verificación para este correo.</sys:String>
 
     <!-- Sonido -->
     <sys:String x:Key="msg_SoundVolumeInvalid">Valor de volumen inválido.</sys:String>
 
     <!-- Operaciones generales -->
     <sys:String x:Key="msg_OperationInterrupted">La operación fue interrumpida debido a una validación fallida.</sys:String>
+    <sys:String x:Key="msg_UserValidationError">Algunos de tus datos no son válidos. Revisa los campos.</sys:String>
+
+    <!-- ========================================================= -->
+    <!--  VALIDATOR.cs — MENSAJES ESPECÍFICOS                      -->
+    <!-- ========================================================= -->
+
+    <!-- NAME -->
+    <sys:String x:Key="msg_InvalidNameEmpty">El nombre no puede estar vacío.</sys:String>
+    <sys:String x:Key="msg_InvalidNameLength">El nombre debe tener entre 2 y 50 caracteres.</sys:String>
+    <sys:String x:Key="msg_InvalidNameCharacters">El nombre contiene caracteres inválidos.</sys:String>
+
+    <!-- USERNAME -->
+    <sys:String x:Key="msg_InvalidUsernameEmpty">El nombre de usuario no puede estar vacío.</sys:String>
+    <sys:String x:Key="msg_InvalidUsernameLength">El nombre de usuario debe tener entre 3 y 15 caracteres.</sys:String>
+    <sys:String x:Key="msg_InvalidUsernameCharacters">El nombre de usuario contiene caracteres inválidos.</sys:String>
+
+    <!-- PASSWORD -->
+    <sys:String x:Key="msg_InvalidPasswordEmpty">La contraseña no puede estar vacía.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordLength">La contraseña debe tener al menos 8 caracteres.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordUppercase">La contraseña debe tener al menos una letra mayúscula.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordLowercase">La contraseña debe tener al menos una letra minúscula.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordDigit">La contraseña debe tener al menos un número.</sys:String>
+    <sys:String x:Key="msg_InvalidPasswordSpecial">La contraseña debe tener al menos un carácter especial.</sys:String>
+
+    <!-- EMAIL -->
+    <sys:String x:Key="msg_InvalidEmailEmpty">El correo no puede estar vacío.</sys:String>
+    <sys:String x:Key="msg_InvalidEmailTooLong">El correo es demasiado largo.</sys:String>
+    <sys:String x:Key="msg_InvalidEmailFormat">El formato del correo electrónico no es válido.</sys:String>
+
 
 </ResourceDictionary>

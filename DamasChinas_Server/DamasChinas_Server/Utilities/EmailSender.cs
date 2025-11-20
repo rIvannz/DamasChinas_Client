@@ -5,12 +5,30 @@ namespace DamasChinas_Server.Utilities
 {
     internal static class EmailSender
     {
+        /// <summary>
+        /// Envía el correo con el código de verificación.
+        /// Maneja únicamente bitácora interna: NO envía mensajes al cliente.
+        /// </summary>
         public static void SendVerificationEmail(string email, string code)
         {
-            var subject = "Código de verificación";
-            var body = $"Tu código de verificación es: <b>{code}</b><br>Este código expirará en 5 minutos.";
+            try
+            {
+                var subject = "Código de verificación";
+                var body =
+                    $"Tu código de verificación es: <b>{code}</b><br>" +
+                    "Este código expirará en 5 minutos.";
 
-            Email.SendAsync(email, subject, body, html: true).GetAwaiter().GetResult();
+                Email.SendAsync(email, subject, body, html: true).GetAwaiter().GetResult();
+
+                System.Diagnostics.Debug.WriteLine($"[TRACE] Verification email sent to: {email}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[ERROR] Failed to send verification email to {email}: {ex.Message}");
+                throw; // Se deja que SingInService lo capture y asigne MessageCode correspondiente
+            }
         }
     }
 }
+
