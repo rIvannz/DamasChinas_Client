@@ -111,23 +111,6 @@ namespace DamasChinas_Client.UI.Pages
                 return false;
             }
 
-            // If you want to enable internal validation:
-            /*
-			try
-			{
-				Validator.ValidateUsername(username);
-				Validator.ValidatePassword(password);
-			}
-			catch (ArgumentException ex)
-			{
-				MessageHelper.ShowPopup(
-					MessageTranslator.GetLocalizedMessage("msg_InvalidCredentials"),
-					"warning"
-				);
-				return false;
-			}
-			*/
-
             return true;
         }
 
@@ -149,7 +132,7 @@ namespace DamasChinas_Client.UI.Pages
             {
                 try
                 {
-                    // Esperar tiempo mínimo de loading
+                   
                     await loadingWindow.WaitMinimumAsync();
                 }
                 catch (Exception ex)

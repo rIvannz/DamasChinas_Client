@@ -7,7 +7,6 @@ namespace DamasChinas_Server.Utilities
     {
         /// <summary>
         /// Envía el correo con el código de verificación.
-        /// Maneja únicamente bitácora interna: NO envía mensajes al cliente.
         /// </summary>
         public static void SendVerificationEmail(string email, string code)
         {
@@ -26,7 +25,7 @@ namespace DamasChinas_Server.Utilities
             {
                 System.Diagnostics.Debug.WriteLine(
                     $"[ERROR] Failed to send verification email to {email}: {ex.Message}");
-                throw; // Se deja que SingInService lo capture y asigne MessageCode correspondiente
+                throw; 
             }
         }
     }

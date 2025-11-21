@@ -8,16 +8,16 @@ namespace DamasChinas_Server
 	public class ChatService : IChatService
 	{
 
-		private static readonly ConcurrentDictionary<string, IChatCallback> clientes = new ConcurrentDictionary<string, IChatCallback>();
+		private static readonly ConcurrentDictionary<string, IChatCallback> clients = new ConcurrentDictionary<string, IChatCallback>();
 
 		private ChatRepository _repo = new ChatRepository();
 
 		public void RegistrateClient(string username)
 		{
 			var callback = OperationContext.Current.GetCallbackChannel<IChatCallback>();
-			if (!clientes.ContainsKey(username))
+			if (!clients.ContainsKey(username))
 			{
-				clientes[username] = callback;
+				clients[username] = callback;
 			}
 		}
 
@@ -29,11 +29,11 @@ namespace DamasChinas_Server
 
 			_repo.SaveMessage(idUserSender, idUserRecipient, message.Text);
 
-			if (clientes.ContainsKey(message.DestinationUsername))
+			if (clients.ContainsKey(message.DestinationUsername))
 			{
 				try
 				{
-					clientes[message.DestinationUsername].ReceiveMessage(message);
+					clients[message.DestinationUsername].ReceiveMessage(message);
 				}
 				catch
 				{

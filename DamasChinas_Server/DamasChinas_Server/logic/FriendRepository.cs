@@ -88,52 +88,52 @@ namespace DamasChinas_Server
                         }
                 }
 
-                public bool AddFriend(int idUsuario1, int idUsuario2)
+                public bool AddFriend(int senderUsername, int receiverUsername)
                 {
-                        if (idUsuario1 == idUsuario2)
+                        if (senderUsername == receiverUsername)
                         {
                                 throw new Exception("Un usuario no puede agregarse a sí mismo.");
                         }
 
                         using (var db = CreateDbContext())
                         {
-                                var existe1 = db.usuarios.Any(u => u.id_usuario == idUsuario1);
-                                var existe2 = db.usuarios.Any(u => u.id_usuario == idUsuario2);
+                                var exist1 = db.usuarios.Any(u => u.id_usuario == senderUsername);
+                                var exist2 = db.usuarios.Any(u => u.id_usuario == receiverUsername);
 
-                                if (!existe1 || !existe2)
+                                if (!exist1 || !exist2)
                                 {
                                         throw new Exception("Uno o ambos usuarios no existen.");
                                 }
-                                bool yaSonAmigos = db.amistades.Any(a =>
-                                        (a.id_usuario1 == idUsuario1 && a.id_usuario2 == idUsuario2) ||
-                                        (a.id_usuario1 == idUsuario2 && a.id_usuario2 == idUsuario1)
+                                bool friendshipexist = db.amistades.Any(a =>
+                                        (a.id_usuario1 == senderUsername && a.id_usuario2 == receiverUsername) ||
+                                        (a.id_usuario1 == receiverUsername && a.id_usuario2 == senderUsername)
                                 );
 
-                                if (yaSonAmigos)
+                                if (friendshipexist)
                                 {
                                         throw new Exception("Estos usuarios ya son amigos.");
                                 }
-                                var nuevaAmistad = new amistades
+                                var newfriendship = new amistades
                                 {
-                                        id_usuario1 = idUsuario1,
-                                        id_usuario2 = idUsuario2,
+                                        id_usuario1 = senderUsername,
+                                        id_usuario2 = receiverUsername,
                                         fecha_amistad = DateTime.Now
                                 };
 
-                                db.amistades.Add(nuevaAmistad);
+                                db.amistades.Add(newfriendship);
                                 db.SaveChanges();
 
                                 return true;
                         }
                 }
 
-                public bool DeleteFriend(int idUsuario1, int idUsuario2)
+                public bool DeleteFriend(int senderUsername, int receiverUsername)
                 {
                         using (var db = CreateDbContext())
                         {
                                 var amistad = db.amistades.FirstOrDefault(a =>
-                                        (a.id_usuario1 == idUsuario1 && a.id_usuario2 == idUsuario2) ||
-                                        (a.id_usuario1 == idUsuario2 && a.id_usuario2 == idUsuario1)
+                                        (a.id_usuario1 == senderUsername && a.id_usuario2 == receiverUsername) ||
+                                        (a.id_usuario1 == receiverUsername && a.id_usuario2 == senderUsername)
                                 );
 
                                 if (amistad == null)
@@ -312,14 +312,14 @@ namespace DamasChinas_Server
                                 }
                                 else
                                 {
-                                        var bloqueo = db.bloqueos.FirstOrDefault(b => b.id_bloqueador == blockerId && b.id_bloqueado == blockedId);
+                                        var bloq = db.bloqueos.FirstOrDefault(b => b.id_bloqueador == blockerId && b.id_bloqueado == blockedId);
 
-                                        if (bloqueo == null)
+                                        if (bloq == null)
                                         {
                                                 throw new InvalidOperationException("No existe un bloqueo entre los usuarios.");
                                         }
 
-                                        db.bloqueos.Remove(bloqueo);
+                                        db.bloqueos.Remove(bloq);
                                 }
 
                                 db.SaveChanges();

@@ -10,12 +10,8 @@ namespace DamasChinas_Server.Utilidades
         private const string SmtpHost = "smtp.gmail.com";
         private const int SmtpPort = 587;
         private const bool EnableSsl = true;
-
         private const string SenderEmail = "damaschinas4u@gmail.com";
-
-        // TODO: Mover a recurso seguro o app.config encriptado
         private const string SenderPassword = "prfd slyq tppc mlni";
-
         private const string WelcomeSubject = "Bienvenido a Damas Chinas";
         private const string WelcomeBodyTemplate =
             "Hola {0},<br><br>" +
@@ -24,10 +20,6 @@ namespace DamasChinas_Server.Utilidades
             "¡Nos alegra tenerte con nosotros!<br><br>" +
             "Atentamente,<br>Equipo Damas Chinas";
 
-        /// <summary>
-        /// Envía un correo electrónico mediante SMTP.
-        /// Solo bitácora interna: NO envía texto al cliente.
-        /// </summary>
         public static async Task<bool> SendAsync(string receiver, string subject, string body, bool html = true)
         {
             try
@@ -55,7 +47,7 @@ namespace DamasChinas_Server.Utilidades
             catch (SmtpException smtpEx)
             {
                 System.Diagnostics.Debug.WriteLine($"[ERROR] SMTP error sending email: {smtpEx.StatusCode} - {smtpEx.Message}");
-                throw; // Se lanza hacia afuera para que SingInService lo capture
+                throw;
             }
             catch (Exception ex)
             {
@@ -64,10 +56,8 @@ namespace DamasChinas_Server.Utilidades
             }
         }
 
-        /// <summary>
-        /// Envía correo de bienvenida.
-        /// </summary>
-        public static async Task EnviarBienvenidaAsync(UserInfo user)
+
+        public static async Task SendWelcomeAsync(UserInfo user)
         {
             string subject = WelcomeSubject;
             string body = string.Format(WelcomeBodyTemplate, user.FullName, user.Username);

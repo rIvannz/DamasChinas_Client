@@ -60,7 +60,6 @@ namespace DamasChinas_Client.UI.Pages
             }
             catch (Exception ex)
             {
-                // Aquí puedes usar tu mensaje traducido si tienes una clave
                 MessageHelper.ShowPopup(
                     "Error al comunicarse con el servidor: " + ex.Message,
                     "error");
@@ -91,7 +90,6 @@ namespace DamasChinas_Client.UI.Pages
                 {
                     var client = new FriendServiceClient();
 
-                    // receiver = el que está logueado, sender = el que envió la solicitud
                     bool success = client.UpdateFriendRequestStatus(
                         receiverUsername: currentUsername,
                         senderUsername: req.Username,

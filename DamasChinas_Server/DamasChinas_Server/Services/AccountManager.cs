@@ -79,7 +79,6 @@ namespace DamasChinas_Server.Services
                 result.Success = success;
                 result.Code = success ? successCode : failureCode;
 
-                // Solo bitácora interna. NO ES mensaje para el usuario.
                 result.TechnicalDetail = success
                     ? $"Operation '{context}' executed successfully."
                     : $"Operation '{context}' failed during business logic.";
@@ -95,7 +94,6 @@ namespace DamasChinas_Server.Services
                 result.Success = false;
                 result.Code = fatalCode;
 
-                // Mensaje técnico interno permitido. Nunca mostrado en UI.
                 result.TechnicalDetail = $"SQL Exception in {context}: {ex.Number} - {ex.Message}";
 
                 System.Diagnostics.Debug.WriteLine($"[FATAL] SQL error in {context}: {ex.Message}");

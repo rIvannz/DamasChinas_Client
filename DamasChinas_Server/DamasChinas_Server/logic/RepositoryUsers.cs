@@ -25,20 +25,17 @@ namespace DamasChinas_Server
 
         public void ValidateCreateUser(UserDto userDto)
         {
-            // Validaciones de formato/longitud del servidor
             Validator.ValidateUserDto(userDto);
 
             ExecuteInContext(db =>
             {
                 if (EntityExists<usuarios>(db, u => u.correo == userDto.Email))
                 {
-                    // Email ya registrado
                     throw new RepositoryValidationException(MessageCode.UserDuplicateEmail);
                 }
 
                 if (EntityExists<perfiles>(db, p => p.username.Equals(userDto.Username, StringComparison.OrdinalIgnoreCase)))
                 {
-                    // Username ya existente (usa tu msg_UsernameExists)
                     throw new RepositoryValidationException(MessageCode.UsernameExists);
                 }
 
@@ -138,15 +135,11 @@ namespace DamasChinas_Server
 
             return ExecuteInContext(db =>
             {
-                // Si no hay perfil, lanzará UserProfileNotFound
+
                 var perfil = GetPerfilByUsername(db, username);
                 return perfil.id_usuario;
             });
         }
-
-        // ============================
-        // Helpers internos
-        // ============================
 
         private damas_chinasEntities CreateContext()
         {
@@ -263,7 +256,6 @@ namespace DamasChinas_Server
             }
             catch (DbEntityValidationException)
             {
-                // Si hay error de validación a nivel EF, lo marcamos como error desconocido
                 throw new RepositoryValidationException(MessageCode.UnknownError);
             }
         }
